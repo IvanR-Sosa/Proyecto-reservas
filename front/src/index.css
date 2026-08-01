@@ -1,0 +1,27 @@
+:root{
+    --background-main:#FFFFFF;
+    --background-sec:#F4F4F4;
+    --text-color-main:#222222;
+    --primary-btn-color:#6A0DAD;
+    --text-primary-btn:#FFFFFF;
+    --headers-color:#00BFFF;
+    --secondary-btn-color:#FFD700;
+    --text-secondary-btn:#000000;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+}
+body{
+    background-color: var(--background-main);
+    color: var(--text-primary-btn);
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    
+}
+header,footer{
+    background-color: var(--headers-color);
+    padding: 0px 10px;
+    font-weight: bold;
+    width: 100%;
+}
+

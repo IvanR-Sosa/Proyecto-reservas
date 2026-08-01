@@ -1,0 +1,40 @@
+header{
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+}
+
+.left-header a{
+    text-decoration: none;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+}
+.left-header img{
+    height: 70px;  
+}
+.left-header span{
+    font-size: 14px;
+}
+.right-header{
+    padding-right: 10px;
+}
+
+.right-header a{
+    margin-right: 5px;
+    background-color: #FFD700;
+    text-decoration: none;
+    color: #222222;
+    padding: 5px;
+    font-size: 14px;
+    border-radius: 5px;
+    border:1.5px solid;
+    transition: all .5s;
+}
+.right-header a:hover{
+    background-color: #FFFFFF;
+    font-size: 15px;
+}

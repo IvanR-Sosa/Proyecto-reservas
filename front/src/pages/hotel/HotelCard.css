@@ -1,0 +1,117 @@
+img{
+    border-radius: 5px;
+}
+.hotel-card{
+    margin-top: 80px;
+    margin-bottom: 70px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 5px;
+    background-color: rgb(235, 234, 234);
+    color: #222222;
+}
+
+.hotel-card .tittle{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    padding: 0 5px ;
+    margin-bottom: 2px;
+}
+.tittle a{
+    margin-right: 5px;
+    background-color: #FFD700;
+    text-decoration: none;
+    color: #222222;
+    padding: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    border:1.5px solid;
+    transition: all .5s;
+}
+.tittle a:hover{
+    background-color: #FFFFFF;
+    font-size: 15px;
+}
+.tittle h2{
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.description{
+   
+    padding: 0 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 5px;
+}
+.description p{
+    margin-top: 1px;
+    margin-bottom: 1px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 2px;
+}
+
+.galery-card{
+   
+    margin: 2px 0;
+    padding: 2px;
+    display: flex;
+    justify-content: space-between;
+}
+.galery-card .main{
+    width: 49%;
+}
+.main img{
+    width: 100%;
+    height: 305px;
+    box-shadow: 2px 2px 1.5px #6A0DAD;
+}
+.galery-card .others{
+    width: 49%;
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+}
+.others img{
+    width: 99%;
+    height: 150px;
+    box-shadow: 2px 2px 1.5px #6A0DAD;
+    margin-bottom: 5px;
+}
+.galery-complete{
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    height:auto;
+    margin-top: 5px;
+}
+.galery-complete img{
+    width: 95%;
+    height: 150px;
+    margin-bottom: 5px;
+    box-shadow: 2px 2px 1.5px #6A0DAD;
+}
+.btn{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5px;
+}
+.btn button{
+    background-color: #FFD700;
+    border: solid 1.5px #000;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px;
+    border-radius: 5px;
+    transition: .3s ease;
+}
+.btn button:hover{
+    background-color: #FFFFFF;
+    font-size: 14px;
+    border-radius: 8px;
+}
+
+

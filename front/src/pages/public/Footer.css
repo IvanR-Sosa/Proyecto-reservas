@@ -1,0 +1,16 @@
+footer{
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    flex-direction: column;
+}
+.left-footer{
+    display: flex;
+    align-items: center;
+}
+.logo-footer img{
+    height: 50px;
+}

@@ -1,0 +1,71 @@
+.home{
+    padding: 10px 10px;
+    margin-top: 70px;
+    margin-bottom: 60px;
+    color: #222;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.search-home form{
+    display: flex;
+    padding: 5px;
+    gap: 15px;
+}
+.search-home label{
+   margin-right: 5px;
+   font-size: 15px;
+   font-weight: bold;
+}
+.search-home form button{
+    background-color: #FFD700;
+    border: solid 1.5px #000;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px;
+    border-radius: 5px;
+    transition: .3s ease;
+}
+.search-home form button:hover{
+    background-color: #FFFFFF;
+    font-size: 14px;
+    border-radius: 8px;
+}
+.areas-search{
+    display: flex;
+    gap: 10px;
+}
+.areas-search input,form button{
+    padding: 5px;
+}
+.areas-search input{
+    font-size: 14px;
+    border-radius:5px;
+    border: none;
+    box-shadow:1px 1px 1px #04ace4;
+    transition: ease .3s;
+}
+
+.areas-search input:focus{
+    box-shadow:4px 3px 2px #04ace4;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+}
+
+.products-home{
+    border-radius: 5px;
+    border:solid #000 1.5px;
+    padding: 2px;
+}
+.products-home h2,.top-products-home h2{
+    text-align: center;
+}
+
+
+.top-products-home{
+    border-radius: 5px;
+    border:solid #b49a08 1.5px;
+    padding: 2px;
+}

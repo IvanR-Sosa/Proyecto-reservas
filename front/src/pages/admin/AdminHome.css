@@ -1,0 +1,42 @@
+.main-admin{
+    margin-top: 75px;
+    margin-bottom: 70px;
+    margin-left: 5px;
+    margin-right: 5px;
+    color: #222222;
+    background-color: rgba(235, 234, 234);
+    padding: 2px 5px;
+}
+h1{
+    font-size: 30px;
+    text-align: center;
+}
+.menu-admin{
+    padding: 5px;
+    display: flex;
+    gap: 5px;
+    margin-bottom: 5px;
+}
+.main-admin button{
+    background-color: #FFD700;
+    border: solid 1px #000;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px;
+    transition: .3s ease;
+}
+.main-admin button:hover{
+    background-color: #FFF;
+    font-size: 14px;
+    border-radius: 8px;
+}
+.container-admin{
+    border: 1.5px solid #6A0DAD;
+    border-radius: 5px;
+    padding: 5px;
+    height: 500px;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)), url(/src/assets/rutah.PNG);
+    background-size: 85% 100%;
+    overflow-y: scroll;
+}
