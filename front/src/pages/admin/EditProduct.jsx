@@ -1,75 +1,54 @@
 import React, { useState } from "react";
-import "./AddProduct.css";
-import { addHotel, getAll } from "../../service/ApiHotel";
+import "./addProduct.css";
 
-const AddProduct = ({onAdd}) => {
-  const [hotel, setHotel] = useState({
-    id: "",
-    name: "",
-    description: "",
-    goodAverage: "",
-    price: "",
-    route: "",
-    mainImg: null,
-    othersImg: []
-  });
+const EditProduct = ({ hotel, onSave }) => {
+  const [formData, setFormData] = useState({ ...hotel });
+  const [newMainImg, setNewMainImg] = useState(null);
+  const [newOthersImg, setNewOthersImg] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setHotel((prevData) => ({
+    setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
   };
-  const handleFileChange =(e) =>{
-    const {name,files} = e.target;
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
 
-    if(name==='mainImg'){
-      const file = files[0];
-    if (file) {
-      // Creamos una URL temporal para el archivo
-      const imageUrl = URL.createObjectURL(file);
-      setHotel((prev) => ({ ...prev, mainImg: imageUrl }));
+    if (name === "mainImg") {
+      const file = files[0]
+      if(file){
+        const imgUrl = URL.createObjectURL(file);
+        setNewMainImg(imgUrl);
+      }
     }
-    }else if(name==='othersImg'){
-      // Convertimos FileList a Array y creamos URLs para cada uno
-    const filesArray = Array.from(files);
-    const imageUrls = filesArray.map((file) => URL.createObjectURL(file));
-    setHotel((prev) => ({ ...prev, othersImg: imageUrls }));
-    }
-  }
-
-  const handleSubmit = async (e) => {
-    try {
-      e.preventDefault();
-      console.log("Datos de Hotel", hotel);
-      await onAdd(hotel);
-      alert(`Hola ¡${hotel.name} ! datos cargados exitosamente`);
-        setHotel({
-        id: "",
-        name: "",
-        description: "",
-        goodAverage: "",
-        price: "",
-        route: "",
-        mainImg: null,
-        othersImg: [],
-      });
-    } catch (error) {
-      console.error("Falla en la carga:", error);
-      alert("Hubo un error al guardar el hotel. Revisa la consola.");
-    }
+    if (name === "othersImg"){ 
+      const filesArray = Array.from(files);
+      const imgUrls = filesArray.map((f)=> URL.createObjectURL(f));
+      setNewOthersImg(imgUrls);
+      }
   };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const dataToSend = {
+      ...formData,
+      mainImg: newMainImg || null,
+      othersImg: newOthersImg || null,
+    };
+    await onSave(dataToSend);
+  };
+
   return (
     <div className="add-admin">
-      <h2>Agregar Hotel</h2>
+      <h2>Editar Hotel</h2>
       <form onSubmit={handleSubmit}>
         <label>
           Nombre{" "}
           <input
             type="text"
             name="name"
-            value={hotel.name}
+            value={formData.name}
             onChange={handleChange}
             placeholder="nombre hotel"
           />
@@ -79,7 +58,7 @@ const AddProduct = ({onAdd}) => {
           <input
             type="number"
             name="price"
-            value={hotel.price}
+            value={formData.price}
             onChange={handleChange}
           />
         </label>
@@ -88,7 +67,7 @@ const AddProduct = ({onAdd}) => {
           <input
             type="number"
             name="goodAverage"
-            value={hotel.goodAverage}
+            value={formData.goodAverage}
             onChange={handleChange}
           />
         </label>
@@ -97,7 +76,7 @@ const AddProduct = ({onAdd}) => {
           Descripcion{" "}
           <textarea
             name="description"
-            value={hotel.description}
+            value={formData.description}
             onChange={handleChange}
             placeholder="descripcion"
           ></textarea>
@@ -106,7 +85,7 @@ const AddProduct = ({onAdd}) => {
           Ruta{" "}
           <input
             name="route"
-            value={hotel.route}
+            value={formData.route}
             onChange={handleChange}
             placeholder="Ruta"
           ></input>
@@ -131,11 +110,11 @@ const AddProduct = ({onAdd}) => {
           />
         </label>
         <button type="submit" className="btn-add">
-          Agregar
+          Editar
         </button>
       </form>
     </div>
   );
 };
 
-export default AddProduct;
+export default EditProduct;

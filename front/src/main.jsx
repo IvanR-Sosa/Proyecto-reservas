@@ -14,7 +14,7 @@ createRoot(document.getElementById("root")).render(
       <Header />
       <Routes>
         <Route path="/" element={<App />}></Route>
-        <Route path="/hotel_card" element={<HotelCard />}></Route>
+        <Route path="/hotel_card/:id" element={<HotelCard />}></Route>
         <Route path="/admin" element={<AdminHome />} ></Route>
       </Routes>
       <Footer />
