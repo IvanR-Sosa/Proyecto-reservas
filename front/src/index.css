@@ -1,3 +1,6 @@
+* {
+    box-sizing: border-box; 
+}
 :root{
     --background-main:#FFFFFF;
     --background-sec:#F4F4F4;
@@ -12,7 +15,7 @@
 }
 body{
     background-color: var(--background-main);
-    color: var(--text-primary-btn);
+    color: var(--text-color-main);
     margin: 0;
     padding: 0;
     width: 100%;
@@ -22,6 +25,29 @@ header,footer{
     background-color: var(--headers-color);
     padding: 0px 10px;
     font-weight: bold;
-    width: 100%;
+}
+
+header {
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;       /* Asegura que empiece alineado a la izquierda */
+  width: 100%;   /* Ocupa el ancho exacto de la pantalla */
+  z-index: 1000; /* Evita que el contenido de la página pase por encima del header */
+}
+
+footer {
+  height: 60px;
+  display: flex;
+  justify-content: space-between; /* Alinea logo a la izquierda y lo que venga a la derecha */
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;        /* Asegura que empiece alineado a la izquierda */
+  width: 100%;    /* Ocupa el ancho exacto de la pantalla */
+  z-index: 1000;
 }
 

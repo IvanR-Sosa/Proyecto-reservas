@@ -27,11 +27,16 @@
     border-radius: 5px;
     transition: .3s ease;
 }
-.search-home form button:hover{
+@media(hover:hover){
+    .search-home form button:hover{
     background-color: #FFFFFF;
     font-size: 14px;
     border-radius: 8px;
 }
+    
+
+}
+
 .areas-search{
     display: flex;
     gap: 10px;
@@ -68,4 +73,31 @@
     border-radius: 5px;
     border:solid #b49a08 1.5px;
     padding: 2px;
+}
+
+/*VAMOS A HACER LAS CORRECIONES NECESARIAS PARA QUE ADAPTARLO A PANTALLAS MOVILES DE 600PX O MENOS*/
+@media(max-width:600px){
+    .home{
+        margin-top: 55px;
+        margin-bottom: 50px;
+    }
+    /*Pasamos el formulario a vertical ya que en pantallas aun menores se rompera */
+    .search-home form{
+        flex-direction: column;
+        gap: 12px;
+        padding: 10px;
+    }
+    /*Hacemos practicamente lo mismo a los inputs para que el select quede arriba y el espacio para buscar abajo*/
+    .areas-search{
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+     /* Hacemos que los inputs y el botón midan el 100% del ancho del movil */
+  .areas-search input,
+  .search-home form button {
+    width: 100%;
+    padding: 10px; /* Un padding más grande para que sea más fácil pulsar con el dedo */
+    font-size: 16px; /* Evita que los iPhones hagan un zoom molesto automático al escribir */
+  }
 }

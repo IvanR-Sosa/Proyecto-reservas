@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./addProduct.css";
+import { uploadImgs } from "../../service/ApiHotel";
 
 const EditProduct = ({ hotel, onSave }) => {
   const [formData, setFormData] = useState({ ...hotel });
@@ -16,26 +17,54 @@ const EditProduct = ({ hotel, onSave }) => {
   const handleFileChange = (e) => {
     const { name, files } = e.target;
 
-    if (name === "mainImg") {
-      const file = files[0]
-      if(file){
-        const imgUrl = URL.createObjectURL(file);
-        setNewMainImg(imgUrl);
-      }
+     if (name === "mainImg") {
+      const file = files && files.length > 0 ? files[0] : null;
+      setNewMainImg(file);
     }
-    if (name === "othersImg"){ 
-      const filesArray = Array.from(files);
-      const imgUrls = filesArray.map((f)=> URL.createObjectURL(f));
-      setNewOthersImg(imgUrls);
-      }
+     if (name === "othersImg") { 
+      const filesArray = files && files.length > 0 ? Array.from(files) : null;
+      setNewOthersImg(filesArray);
+    }
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const dataToSend = {
-      ...formData,
-      mainImg: newMainImg || null,
-      othersImg: newOthersImg || null,
-    };
+    let mainImgName = null;
+    let othersImgName = null;
+
+    if(newMainImg instanceof File){
+      try {
+        console.log("Subiendo nueva imagen Principal")
+        mainImgName = await uploadImgs(newMainImg);
+        console.log("nueva imagen principal Subida con exito-->" , mainImgName);
+      } catch (error) {
+        console.error("Error al cargar la nueva imagen principal ---> ",error);
+        alert("Error al cargar la nueva imagen principal");
+      }
+    }
+    if(newOthersImg && newOthersImg.length >0){
+      if(newOthersImg[0] instanceof File){
+        try {
+          const uploadNames = await Promise.all(
+            newOthersImg.map(file => uploadImgs(file))
+          );
+          othersImgName = uploadNames;
+        } catch (error) {
+          console.error("Error al cargar las nueva imagenes secundarias ---> ",error);
+          alert("Error al cargar las nueva imagenes secundarias");
+        }
+      }
+    }
+      const dataToSend = {
+    id: formData.id,
+    name: formData.name,
+    price: formData.price,
+    goodAverage: formData.goodAverage,
+    description: formData.description,
+    route: formData.route,
+    // Aquí forzamos el valor: si no subió nada, es null.
+    mainImg: mainImgName, 
+    othersImg: othersImgName,
+  };
     await onSave(dataToSend);
   };
 

@@ -34,7 +34,29 @@ header{
     border:1.5px solid;
     transition: all .5s;
 }
-.right-header a:hover{
+@media(hover:hover){
+    .right-header a:hover{
     background-color: #FFFFFF;
     font-size: 15px;
+}
+}
+/*VAMOS A AJUSTAR LO NECESARIO PARA QUE EL HEADER FUNCIONE EN PANTALLAS DE 600PX O MENOS*/
+@media (max-width:600px) {
+    header{
+        height: 55px;
+        padding: 0 10px;
+    }
+    .left-header img{
+        height: 55px;
+    }
+    .left-header span{
+        display: none;
+    }
+    .right-header{
+        padding-right: 0;
+    }
+    .right-header a{
+        padding: 4px 8px;
+        font-size: 12px;
+    }
 }

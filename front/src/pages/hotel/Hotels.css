@@ -1,7 +1,7 @@
 .hotel-list{
     display: grid;
     grid-template-columns: repeat(2,1fr);
-    grid-template-rows: repeat(2,1fr);/*Por el momento va a quedar de 2 por 2 pero despues sera de 2 por 5*/
+    grid-template-rows: repeat(5,1fr);/*Por el momento va a quedar de 2 por 2 pero despues sera de 2 por 5*/
     gap: 15px;
     max-width: 1200px;
     margin: 0 auto;
@@ -34,10 +34,12 @@
     border:1.5px solid;
     transition: all .5s;
 }
-.basic-card a:hover{
+@media(hover:hover){
+    .basic-card a:hover{
     background-color: #FFFFFF;
     color: #222;
     font-size: 15px;
+}
 }
 .basic-card h2{
     margin-bottom: 1px;
@@ -45,4 +47,25 @@
 }
 .basic-card p{
     font-size: 14px;
+}
+
+
+/*VAMOS A HACER LAS CORRECIONES NECESARIAS PARA QUE ADAPTARLO A PANTALLAS MOVILES DE 600PX O MENOS*/
+@media(max-width:600px){
+    /*Pasar la lista a una sola columna*/
+    .hotel-list{
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        gap: 20px;
+        padding: 0 15px;
+    }
+    /*Ajuste de la tarjeta basica para evitar que se vea fea*/
+    .basic-card{
+        height: auto;
+        padding-bottom: 15px;
+    }
+    .basic-card img{
+        width: 98%;
+        height: 200px;
+    }
 }

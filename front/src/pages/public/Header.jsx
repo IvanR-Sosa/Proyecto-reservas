@@ -9,7 +9,7 @@ const Header = () => {
         <div className="left-header">
             <Link to = "/">
                 <img src={rutah} alt="" />
-                <span>Para descansa y continua</span>
+                <span>Para, Descansa y Continua</span>
             </Link>
         </div>
         <div className="right-header">

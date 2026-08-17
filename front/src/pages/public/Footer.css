@@ -14,3 +14,13 @@ footer{
 .logo-footer img{
     height: 50px;
 }
+/*VAMOS A AJUSTAR EL FOOTER PARA QUE FUNCIONE BIEN EN UNA PANTALLA DE 600PX O MENOS*/
+@media(max-width:600px){
+    footer{
+        height: 50px;
+        padding: 0 15px;
+    }
+    .logo-footer img{
+        height: 40px;
+    }
+}

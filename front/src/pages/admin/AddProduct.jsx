@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import "./AddProduct.css";
-import { addHotel, getAll } from "../../service/ApiHotel";
+import { addHotel, getAll, uploadImgs } from "../../service/ApiHotel";
 
 const AddProduct = ({onAdd}) => {
   const [hotel, setHotel] = useState({
-    id: "",
     name: "",
     description: "",
     goodAverage: "",
@@ -27,26 +26,66 @@ const AddProduct = ({onAdd}) => {
     if(name==='mainImg'){
       const file = files[0];
     if (file) {
-      // Creamos una URL temporal para el archivo
-      const imageUrl = URL.createObjectURL(file);
-      setHotel((prev) => ({ ...prev, mainImg: imageUrl }));
+      // almacenamos el archivo como tal para enviarlo al servidor
+      setHotel((prev)=> ({...prev,mainImg:file}))
     }
     }else if(name==='othersImg'){
-      // Convertimos FileList a Array y creamos URLs para cada uno
+      // almacenamos el archivo como tal para enviarlo al servidor
     const filesArray = Array.from(files);
-    const imageUrls = filesArray.map((file) => URL.createObjectURL(file));
-    setHotel((prev) => ({ ...prev, othersImg: imageUrls }));
+    setHotel((prev) => ({ ...prev, othersImg: filesArray }));
     }
   }
 
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-      console.log("Datos de Hotel", hotel);
-      await onAdd(hotel);
-      alert(`Hola ¡${hotel.name} ! datos cargados exitosamente`);
+      // estas variables guardaran los NOMBRES(texto) de las imagens
+      let mainImgName = hotel.mainImg;
+      let othersImgNames = hotel.othersImg;
+
+      if(hotel.mainImg instanceof File){
+        try {
+          console.log("Subiendo la imagen principal");
+          mainImgName = await uploadImgs(hotel.mainImg);
+          console.log("Imagen principal subida. Nombre--->",mainImgName);
+        } catch (error) {
+          console.error("Error al subir la imagen principal",error);
+          alert("Error al subir la imagen Principal");
+        }
+      }
+      if(hotel.othersImg && hotel.othersImg.length>0){
+        if(hotel.othersImg[0] instanceof File){
+         try {
+          console.log("Subiendo imágenes secundarias...");
+          // Subimos todas en paralelo para ser más rápidos
+          const uploadedNames = await Promise.all(
+            hotel.othersImg.map(file => uploadImgs(file))
+          );
+          othersImgNames = uploadedNames;
+          console.log("Imágenes secundarias subidas:", othersImgNames);
+        } catch (error) {
+          console.error("Error al subir imágenes secundarias", error);
+          alert("Error al subir imágenes secundarias.");
+          return;
+        }
+        }
+       
+      }
+
+       const hotelData ={
+          ...hotel,
+         
+          mainImg: mainImgName,
+          othersImg: othersImgNames,
+          goodAverage:parseFloat(hotel.goodAverage),
+          price:parseFloat(hotel.price)
+        } 
+        console.log("Datos finales para cargar --> ", hotelData);
+
+      await onAdd(hotelData);
+      alert(`Hola ¡${hotelData.name} ! datos cargados exitosamente`);
         setHotel({
-        id: "",
+        
         name: "",
         description: "",
         goodAverage: "",

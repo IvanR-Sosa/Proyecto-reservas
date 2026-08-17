@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 
 public class HotelDTO {
-    private long id;
+    private Long id;
     private String name;
     private String description;
     private Double goodAverage;

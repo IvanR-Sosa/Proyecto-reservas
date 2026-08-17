@@ -40,3 +40,11 @@ h1{
     background-size: 85% 100%;
     overflow-y: scroll;
 }
+.error{
+    display: none;
+}
+@media(max-width:600px){
+    .main-admin{
+        display: none !important;
+    }
+}

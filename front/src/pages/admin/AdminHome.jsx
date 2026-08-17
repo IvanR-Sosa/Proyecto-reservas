@@ -84,10 +84,12 @@ const AdminHome = () => {
         mainImg: hotelToEdit.mainImg || originalHotel.mainImg,
         othersImg: hotelToEdit.othersImg || originalHotel.othersImg
       }
+     
       await updateHotel(finalHotel);
       await fetchHotels();
       setAddBtn(false);
       setListBtn(true); // para que en cuanto se edite nos muestre la lista
+      setEditState(null);
     } catch (error) {}
   };
 

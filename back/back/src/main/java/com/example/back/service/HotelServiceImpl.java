@@ -44,8 +44,49 @@ public class HotelServiceImpl implements IHotelService {
 
     @Override
     public void save(HotelDTO hotelDTO) {
+        /*
+        Esta parte sera la base para editar el objeto ya que tuve algunos inconvenientes de duplicdo
+        de la ruta de las imagenes al hacer el update
+         */
+        if (hotelDTO.getId() != null){
+            //Buscamos el registro en la bd
+            Hotel hotelExist = hotelDAO.findById(hotelDTO.getId())
+                    .orElseThrow(()->new RuntimeException("Hotel No encontrado"));
+
+            //Hacemos el mapeo del HotelDTO a entidad
+            Hotel hotel = mapToHotel(hotelDTO);
+            hotel.setId(hotelDTO.getId());
+            //Esta URL servira para los condicionales y evitar los duplicados
+            String baseURL = "http://localhost:8081/uploads/";
+            //Acontinuacion haremos que no se duplique la ruta en caso de no editar mainIMG
+            if(hotelDTO.getMainImg()==null){
+                //Caso que react envie null
+                hotel.setMainImg(hotelExist.getMainImg());
+            } else if (hotelDTO.getMainImg().startsWith(baseURL)) {
+                String cleanImg = hotelDTO.getMainImg().replace(baseURL, "");
+                hotel.setMainImg(cleanImg);
+            }
+
+            //logica para othersImg
+            if (hotelDTO.getOthersImg()==null){
+                hotel.setOthersImg(hotelExist.getOthersImg());
+            }else{
+                //Si vienen Urls viejas o mezcladas las limpiamos
+                List<String> cleanListImg =new ArrayList<>();
+                for (String img : hotelDTO.getOthersImg()){
+                    if(img.startsWith(baseURL)){
+                        cleanListImg.add(img.replace(baseURL,""));
+                    }else{
+                        cleanListImg.add(img);
+                    }
+                }
+                hotel.setOthersImg(cleanListImg);
+            }
+            hotelDAO.save(hotel);
+        }else{
         Hotel hotel = mapToHotel(hotelDTO);
         hotelDAO.save(hotel);
+        }
     }
 
     @Override
@@ -89,7 +130,6 @@ public class HotelServiceImpl implements IHotelService {
     }
     private Hotel mapToHotel (HotelDTO hotelDTO){
         return Hotel.builder()
-                .id(hotelDTO.getId())
                 .name(hotelDTO.getName())
                 .description(hotelDTO.getDescription())
                 .goodAverage(hotelDTO.getGoodAverage())
