@@ -1,0 +1,120 @@
+.login{
+  display: flex;
+  justify-content: center;
+  align-items: center;     
+  height: 100vh;           /* Asegura que el div ocupe el alto de la pantalla */
+  width: 100%; 
+  background-image: url(../../assets/rutah.PNG);
+  background-size: 190px;
+  background-position: center;
+  background-repeat: repeat;
+   background-color: rgba(0, 0, 0, 0.4); 
+  background-blend-mode: overlay; 
+}
+.login form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 50%;
+    max-width: 400px;
+    background-color:  #F4F4F4;
+    padding: 20px;
+    font-size: 16px;
+    color: #222;
+    border-radius: 12px;
+    text-align: center;
+    background-color: rgba(244, 244, 244, 0.82);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+.login h2{
+    text-align: center;
+    margin-bottom: 10px;
+    color: #6A0DAD;
+}
+.login form label{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-weight: 600;
+    text-align: left;
+}
+.login form input{
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    padding: 5px;
+    box-shadow:1px 1px 1px #04ace4;
+    background-color: rgba(255, 255, 255, 0.5);
+    transition: .3s ease;
+    box-sizing: border-box;
+}
+.login form input:focus{
+    box-shadow: 0 0 8px #04ace4;
+    border-color: #04ace4;
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+.login form button,
+.login form a{
+    width: 50%;
+    margin: auto;
+    cursor: pointer;
+    background-color: #6A0DAD;
+    font-weight: bold;
+    font-size: 12px;
+    text-decoration: none;
+    color: #FFFFFF;
+    padding: 5px;
+    font-size: 14px;
+    border-radius: 5px;
+    border:1.5px solid;
+    transition: all .5s;
+    display: block;
+}
+.login form a{
+    text-align: center;
+    background-color: transparent;
+    color: #6A0DAD;
+}
+@media(hover:hover) {
+  .login form button:hover {
+    background-color: #FFFFFF;
+    color: #6A0DAD;
+    box-shadow: 0 0 10px #6A0DAD;
+  }
+
+  .login form a:hover {
+    background-color: rgba(106, 13, 173, 0.1);
+    color: #4a097a;
+  }
+}
+
+@media(max-width:600px){
+    .login form{
+        max-width: 550px;
+        width: 80%;
+        height: auto;
+    }
+    .login h2{
+    text-align: center;
+    font-size: 2.5rem;
+
+}
+.login form button,
+.login form a{
+    font-size: 1.5rem;
+    padding: 12px;
+    margin: 10px auto;
+}
+.login label{
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    padding: 5px;
+    font-weight: bold;
+}
+.login form input{
+    font-size: 1.3rem;
+    padding: 10px;
+}
+}

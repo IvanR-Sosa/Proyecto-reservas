@@ -13,8 +13,8 @@ const Header = () => {
             </Link>
         </div>
         <div className="right-header">
-            <Link className="btn-header" to = "/">Iniciar sesion</Link>
-            <Link className="btn-header" to = "/">Crear cuenta</Link>
+            <Link className="btn-header" to = "/Login">Iniciar sesion</Link>
+            <Link className="btn-header" to = "/Register">Crear cuenta</Link>
         </div>
 
     </header>

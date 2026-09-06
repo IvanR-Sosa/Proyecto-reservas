@@ -66,3 +66,67 @@ form .btn-add:hover{
     background-color: #966eb2;
     color: #222222;
 }
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  padding: 20px;
+  border-radius: 12px;
+}
+.features > div {
+  position: relative;
+  overflow: hidden;
+}
+/*Vamos a hacer que el input checBox sea invisible pero funcional*/
+.features input[type="checkbox"]{
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    cursor: pointer;
+    outline: none;
+}
+/*Aqui se va crear la caja que el usuario va a ver y tocar*/
+.features label{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    min-height: 80px;
+    background-color: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    color: #222222;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+.features label:hover{
+    border-color: #04ace4;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+/*Aqui vamos a hacer que "seleccione" el label lo que en realidad sera asignar el checked al input*/
+.features input:checked+label{
+    background-color: #FFD700;
+    border-color: #222222;
+    color: #222222;
+    font-weight: 700;
+     box-shadow: 0 4px 8px rgba(17, 18, 18, 0.2);
+}
+.features label svg {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2;
+  fill: none;
+  stroke: currentColor;
+  transition: transform 0.2s ease;
+}
+.features label:hover svg {
+  transform: scale(1.1);
+}
+

@@ -117,6 +117,32 @@ img{
     border-radius: 8px;
 }
 }
+.features-grid{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 15px;
+    padding: 10px;
+    margin-top: 10px;
+}
+.feature-item{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #FFFFFF;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 1.5px rgba(106, 13, 121, 0.3);
+}
+.feature-item p{
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #222222;
+}
+.feature-item svg {
+    color: #6A0DAD;             
+    flex-shrink: 0;             
+}
 
 /*VAMOS A HACER LOS AJUSTES NECESARIOS PARA QUE FUNCIONE EN PANTALLAS DE 600PX O MENOS*/
 @media(max-width:600px){
@@ -152,6 +178,13 @@ img{
   .galery-complete img {
     width: 100%; 
     height: 110px; 
+  }
+  .features-grid{
+    grid-template-columns: repeat(2,1fr);
+    gap: 10px;
+  }
+  .feature-item p{
+    font-size: 12px;
   }
 }
 

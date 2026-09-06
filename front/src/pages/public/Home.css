@@ -6,57 +6,127 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.search-home{
+    width: 100%;
 }
 
 .search-home form{
     display: flex;
-    padding: 5px;
+    flex-wrap: wrap;
+    padding: 15px;
     gap: 15px;
+    background-color: #FFFFFF;
+    border: 1.5px solid #000;
+    border-radius: 8px;
+    align-items: center;
 }
 .search-home label{
    margin-right: 5px;
    font-size: 15px;
    font-weight: bold;
+   display: flex;
+   align-items: center;
 }
 .search-home form button{
     background-color: #FFD700;
     border: solid 1.5px #000;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: bold;
-    padding: 5px;
+    padding: 5px 16px;
     border-radius: 5px;
-    transition: .3s ease;
+    cursor: pointer;
+    transition:all .3s ease;
+    white-space: nowrap;
 }
 @media(hover:hover){
     .search-home form button:hover{
     background-color: #FFFFFF;
     font-size: 14px;
-    border-radius: 8px;
+    transform:scale(1.05)
 }
-    
-
 }
 
 .areas-search{
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
+    flex: 1;
 }
-.areas-search input,form button{
-    padding: 5px;
+.areas-search input, 
+.areas-search select {
+  padding: 8px 10px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-shadow: 1px 1px 1px #04ace4;
+  transition: all 0.3s ease;
+  outline: none;
 }
-.areas-search input{
-    font-size: 14px;
-    border-radius:5px;
-    border: none;
-    box-shadow:1px 1px 1px #04ace4;
-    transition: ease .3s;
+.areas-search input:focus,
+.areas-search select:focus {
+  box-shadow: 4px 3px 2px #04ace4;
+  border-color: #04ace4;
 }
 
-.areas-search input:focus{
-    box-shadow:4px 3px 2px #04ace4;
+.tags-filter-container{
+    width: 100%;
+    margin-top: 5px;
+    padding: 15px;
+    border: 1.5px solid #B49A08;
     border-radius: 8px;
-    border: none;
-    outline: none;
+    background-color: #fff;
+}
+.tags-tittle{
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: #333;
+}
+.tags-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(140px,1fr));
+    gap: 10px;
+}
+.tag-item{
+    cursor: pointer;
+    position: relative;
+}
+.tag-item input[type="checkbox"]{
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.tag-content{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    background-color: #F9F9F9;
+    border: 1px solid #CCC;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    user-select: none;
+    text-align: center;
+}
+@media(hover:hover){
+    .tag-item:hover .tag-content{
+        border-color: #04ACE4;
+        background-color: #F0F7FF;
+    }
+}
+.tag-item.active .tag-content{
+    background-color: #04ACE4;
+    color: white;
+    border-color: #04ACE4;
+    box-shadow: 1px 2px 4px rgba(4, 172, 228, 0.4);
 }
 
 .products-home{
@@ -75,6 +145,9 @@
     padding: 2px;
 }
 
+
+
+
 /*VAMOS A HACER LAS CORRECIONES NECESARIAS PARA QUE ADAPTARLO A PANTALLAS MOVILES DE 600PX O MENOS*/
 @media(max-width:600px){
     .home{
@@ -84,6 +157,7 @@
     /*Pasamos el formulario a vertical ya que en pantallas aun menores se rompera */
     .search-home form{
         flex-direction: column;
+        align-items: stretch;
         gap: 12px;
         padding: 10px;
     }
@@ -95,9 +169,18 @@
     }
      /* Hacemos que los inputs y el botón midan el 100% del ancho del movil */
   .areas-search input,
+  .areas-search select,
   .search-home form button {
     width: 100%;
     padding: 10px; /* Un padding más grande para que sea más fácil pulsar con el dedo */
     font-size: 16px; /* Evita que los iPhones hagan un zoom molesto automático al escribir */
+  }
+  .tags-grid{
+    grid-template-columns: repeat(auto-fill,minmax(110px,1fr));
+    gap: 8px;
+  }
+  .tag-content {
+    padding: 12px 8px;
+    font-size: 12px;
   }
 }

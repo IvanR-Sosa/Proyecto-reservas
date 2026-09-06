@@ -1,8 +1,11 @@
 package com.example.back.service;
 
 import com.example.back.controller.HotelDTO;
+import com.example.back.entities.Features;
 import com.example.back.entities.Hotel;
+import com.example.back.persistence.IFeaturesDAO;
 import com.example.back.persistence.IHotelDAO;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,9 @@ import java.util.stream.Collectors;
 public class HotelServiceImpl implements IHotelService {
     @Autowired
     private IHotelDAO hotelDAO;
+    @Autowired
+    private IFeaturesDAO featuresDAO;
+
     @Override
     public List<Hotel> findAll() {
         return hotelDAO.findAll();
@@ -43,6 +49,7 @@ public class HotelServiceImpl implements IHotelService {
     }
 
     @Override
+    @Transactional
     public void save(HotelDTO hotelDTO) {
         /*
         Esta parte sera la base para editar el objeto ya que tuve algunos inconvenientes de duplicdo
@@ -82,9 +89,13 @@ public class HotelServiceImpl implements IHotelService {
                 }
                 hotel.setOthersImg(cleanListImg);
             }
+            //llamamos al metodo que me permite settear las features
+            hotel.setFeatures(processFeatures(hotelDTO.getFeatures()));
             hotelDAO.save(hotel);
         }else{
         Hotel hotel = mapToHotel(hotelDTO);
+        //llamamos al metodo que me permite settear las features
+        hotel.setFeatures(processFeatures(hotelDTO.getFeatures()));
         hotelDAO.save(hotel);
         }
     }
@@ -117,6 +128,13 @@ public class HotelServiceImpl implements IHotelService {
                 othersImgUrl.add(baseUrl + img);
             }
         }
+        //Lista para que pueda mostrar las Features
+        List<String> featuresNames = new ArrayList<>();
+        if (hotel.getFeatures() != null) {
+            featuresNames = hotel.getFeatures().stream()
+                    .map(Features::getIconKey)
+                    .collect(Collectors.toList());
+        }
         return HotelDTO.builder()
                 .id(hotel.getId())
                 .name(hotel.getName())
@@ -126,6 +144,7 @@ public class HotelServiceImpl implements IHotelService {
                 .route(hotel.getRoute())
                 .mainImg(mainImgUrl)
                 .othersImg(othersImgUrl)
+                .features(featuresNames)
                 .build();
     }
     private Hotel mapToHotel (HotelDTO hotelDTO){
@@ -138,5 +157,29 @@ public class HotelServiceImpl implements IHotelService {
                 .mainImg(hotelDTO.getMainImg())
                 .othersImg(hotelDTO.getOthersImg())
                 .build();
+    }
+
+    //Metodo para manejar las Features
+    private List<Features>  processFeatures (List<String> featuresList ){
+        List<Features> featuresReturn = new ArrayList<>();
+        if (featuresList != null){
+            for (String name : featuresList){
+                String cleanName = name.trim();
+                Features featureDB = featuresDAO.findByName(cleanName);
+
+                if (featureDB != null){//caso que si exista
+                    featuresReturn.add(featureDB);
+                }else{
+                    //Si no existe creo el registro en la bd de Features y ese es el que voy a usar
+                    Features newfeature = new Features();
+                    newfeature.setIconKey(cleanName);
+                    //Ahora creamos la feature guardada
+                    Features saveFeature = featuresDAO.save(newfeature);
+                    featuresReturn.add(saveFeature);
+                }
+            }
+        }
+        //con esto ya me asegure que el Hotel tenga una lista de Features como en la entidad
+        return featuresReturn;
     }
 }

@@ -112,9 +112,8 @@ const AdminHome = () => {
       <h1>Panel administrativo</h1>
       <div className="menu-admin">
         <button onClick={() => changePanel("listar")}>Listar Productos</button>
-        <button onClick={() => changePanel("agregar")}>
-          Agregar Productos
-        </button>
+        <button onClick={() => changePanel("agregar")}>Agregar Productos</button>
+        <button>Listar usuarios</button>
       </div>
       <div className="container-admin">
         {loading && <p>Cargando panel....</p>}

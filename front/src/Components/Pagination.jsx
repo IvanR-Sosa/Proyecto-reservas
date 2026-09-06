@@ -17,7 +17,7 @@ const Pagination = ({currentPage,setCurrentPage,itemsPerPage,totalItems}) => {
   return (
     <div className='pagination'>
         <button onClick={()=> changePage(currentPage-1)} disabled={currentPage===1} >Anterior</button>
-        <p>{currentPage}</p>
+        <p>{currentPage} de {totalPages}</p>
         <button onClick={()=>changePage(currentPage+1)}  disabled={currentPage === totalPages}>Siguiente</button>
     </div>
   )

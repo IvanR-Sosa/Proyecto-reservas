@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import img0 from "../../assets/img0.png"; //Recuerda que esto desaparecera en el futuro
 import { Link, useParams } from "react-router-dom";
 import "./HotelCard.css";
 import { findById } from "../../service/ApiHotel";
+import { getIconByKey } from "../../utils/IconList";
 
 const HotelCard = () => {
   const { id } = useParams();
@@ -34,10 +34,13 @@ const HotelCard = () => {
   }, [id]);
 
   const handleGallery = async () => {
-    setshowGallery(!showGallery);
+    setshowGallery(!showGallery)
+    setshowAllGallery(false)
+    
   };
   const changeAllGallery = async () => {
     setshowAllGallery(!showAllGallery);
+    
   };
 
   if (loading) {
@@ -63,13 +66,13 @@ const HotelCard = () => {
       <div className="btn" onClick={handleGallery}>
         <button>ir a galeria</button>
       </div>
+      
       {/* esto va a salir solo si pulsa  el boton de arriba */}
       {showGallery && (
         <div className="galery-card">
           <div className="main">
             <img src={hotel.mainImg} alt="" />
           </div>
-
           <div className="others">
             {gallery.map((h, index) => (
               <img key={index} src={h} alt="" />
@@ -92,6 +95,21 @@ const HotelCard = () => {
           ))}
         </div>
       }
+      <div className="description">
+        <h2>Que Te podemos Ofrecer en tu Estadia </h2>
+        <div className="features-grid">
+          {hotel && hotel.features.map((feature,index)=>{
+            const keyName = typeof feature === 'object' ? feature.iconKey:feature;
+            const Iconcomponent= getIconByKey(keyName);
+            return (
+              <div className="feature-item" key={index}>
+                {Iconcomponent && <Iconcomponent  size={24}/>}
+                <p>{keyName}</p>
+              </div>
+            ) 
+          })}
+        </div>
+      </div>
     </div>
   );
 };

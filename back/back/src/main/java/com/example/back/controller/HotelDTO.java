@@ -21,4 +21,5 @@ public class HotelDTO {
     private String route;
     private String mainImg;
     private List<String> othersImg;
+    private List<String> features;
 }

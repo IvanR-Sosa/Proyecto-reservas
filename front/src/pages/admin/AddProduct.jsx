@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import "./AddProduct.css";
-import { addHotel, getAll, uploadImgs } from "../../service/ApiHotel";
+import { uploadImgs } from "../../service/ApiHotel";
+import { getAllIcons, getIconByKey } from "../../utils/IconList";
 
-const AddProduct = ({onAdd}) => {
+const AddProduct = ({ onAdd }) => {
   const [hotel, setHotel] = useState({
     name: "",
     description: "",
@@ -10,8 +11,10 @@ const AddProduct = ({onAdd}) => {
     price: "",
     route: "",
     mainImg: null,
-    othersImg: []
+    othersImg: [],
   });
+  //useState que manejara las caracteristicas
+  const [selectedIcons, setSelectedIcons] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,21 +23,29 @@ const AddProduct = ({onAdd}) => {
       [name]: value,
     }));
   };
-  const handleFileChange =(e) =>{
-    const {name,files} = e.target;
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
 
-    if(name==='mainImg'){
+    if (name === "mainImg") {
       const file = files[0];
-    if (file) {
+      if (file) {
+        // almacenamos el archivo como tal para enviarlo al servidor
+        setHotel((prev) => ({ ...prev, mainImg: file }));
+      }
+    } else if (name === "othersImg") {
       // almacenamos el archivo como tal para enviarlo al servidor
-      setHotel((prev)=> ({...prev,mainImg:file}))
+      const filesArray = Array.from(files);
+      setHotel((prev) => ({ ...prev, othersImg: filesArray }));
     }
-    }else if(name==='othersImg'){
-      // almacenamos el archivo como tal para enviarlo al servidor
-    const filesArray = Array.from(files);
-    setHotel((prev) => ({ ...prev, othersImg: filesArray }));
-    }
-  }
+  };
+  const toggleIcon = (iconKey) => {
+    setSelectedIcons((prev) => {
+      if (prev.includes(iconKey)) {
+        return prev.filter((key) => key !== iconKey);
+      }
+      return [...prev, iconKey];
+    });
+  };
 
   const handleSubmit = async (e) => {
     try {
@@ -43,49 +54,48 @@ const AddProduct = ({onAdd}) => {
       let mainImgName = hotel.mainImg;
       let othersImgNames = hotel.othersImg;
 
-      if(hotel.mainImg instanceof File){
+      if (hotel.mainImg instanceof File) {
         try {
           console.log("Subiendo la imagen principal");
           mainImgName = await uploadImgs(hotel.mainImg);
-          console.log("Imagen principal subida. Nombre--->",mainImgName);
+          console.log("Imagen principal subida. Nombre--->", mainImgName);
         } catch (error) {
-          console.error("Error al subir la imagen principal",error);
+          console.error("Error al subir la imagen principal", error);
           alert("Error al subir la imagen Principal");
         }
       }
-      if(hotel.othersImg && hotel.othersImg.length>0){
-        if(hotel.othersImg[0] instanceof File){
-         try {
-          console.log("Subiendo imágenes secundarias...");
-          // Subimos todas en paralelo para ser más rápidos
-          const uploadedNames = await Promise.all(
-            hotel.othersImg.map(file => uploadImgs(file))
-          );
-          othersImgNames = uploadedNames;
-          console.log("Imágenes secundarias subidas:", othersImgNames);
-        } catch (error) {
-          console.error("Error al subir imágenes secundarias", error);
-          alert("Error al subir imágenes secundarias.");
-          return;
+      if (hotel.othersImg && hotel.othersImg.length > 0) {
+        if (hotel.othersImg[0] instanceof File) {
+          try {
+            console.log("Subiendo imágenes secundarias...");
+            // Subimos todas en paralelo para ser más rápidos
+            const uploadedNames = await Promise.all(
+              hotel.othersImg.map((file) => uploadImgs(file)),
+            );
+            othersImgNames = uploadedNames;
+            console.log("Imágenes secundarias subidas:", othersImgNames);
+          } catch (error) {
+            console.error("Error al subir imágenes secundarias", error);
+            alert("Error al subir imágenes secundarias.");
+            return;
+          }
         }
-        }
-       
       }
 
-       const hotelData ={
-          ...hotel,
-         
-          mainImg: mainImgName,
-          othersImg: othersImgNames,
-          goodAverage:parseFloat(hotel.goodAverage),
-          price:parseFloat(hotel.price)
-        } 
-        console.log("Datos finales para cargar --> ", hotelData);
+      const hotelData = {
+        ...hotel,
+
+        mainImg: mainImgName,
+        othersImg: othersImgNames,
+        goodAverage: parseFloat(hotel.goodAverage),
+        price: parseFloat(hotel.price),
+        features: selectedIcons,
+      };
+      console.log("Datos finales para cargar --> ", hotelData);
 
       await onAdd(hotelData);
       alert(`Hola ¡${hotelData.name} ! datos cargados exitosamente`);
-        setHotel({
-        
+      setHotel({
         name: "",
         description: "",
         goodAverage: "",
@@ -94,11 +104,15 @@ const AddProduct = ({onAdd}) => {
         mainImg: null,
         othersImg: [],
       });
+      setSelectedIcons([]);
     } catch (error) {
       console.error("Falla en la carga:", error);
       alert("Hubo un error al guardar el hotel. Revisa la consola.");
     }
   };
+
+  //Lamado aa catalogo completo de iconos
+  const iconList = getAllIcons();
   return (
     <div className="add-admin">
       <h2>Agregar Hotel</h2>
@@ -169,6 +183,28 @@ const AddProduct = ({onAdd}) => {
             multiple
           />
         </label>
+        <h3>Seleciona los Servicios </h3>
+        <div className="features">
+          {iconList.map((item) => {
+            const IconComponent = getIconByKey(item.iconKey);
+            const isSelected = selectedIcons.includes(item.iconKey);
+
+            return (
+              <div key={item.iconKey}>
+                <input
+                  type="checkbox"
+                  id={item.iconKey}
+                  checked={isSelected}
+                  onChange={() => toggleIcon(item.iconKey)}
+                />
+                <label htmlFor={item.iconKey}>
+                  {IconComponent && <IconComponent />}
+                  {item.iconKey}
+                </label>
+              </div>
+            );
+          })}
+        </div>
         <button type="submit" className="btn-add">
           Agregar
         </button>

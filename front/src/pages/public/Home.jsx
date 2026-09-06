@@ -3,6 +3,7 @@ import "./Home.css";
 import Hotels from "../hotel/Hotels";
 import { getAll, getTopHotels } from "../../service/ApiHotel";
 import Pagination from "../../Components/Pagination";
+import { getAllIcons, getIconByKey } from "../../utils/IconList";
 
 const shuffleArray = (array) => {
   const shuffled = [...array];
@@ -21,6 +22,7 @@ const Home = () => {
   const [filterId, setfilterId] = useState("");
   const [filterName, setfilterName] = useState("");
   const [filterRoute, setfilterRoute] = useState("");
+  const [filterTag, setFilterTag] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   const fetchHotels = async () => {
@@ -36,21 +38,29 @@ const Home = () => {
           (h) => String(h.id) === String(filterId),
         );
         setListHotels(filtered);
-      }else if(selectedFilter === "name" && filterName.trim() !== ""){
-        const filtered = allData.filter(
-          (h) => String(h.name).toLowerCase().includes(filterName.toLowerCase()),
+      } else if (selectedFilter === "name" && filterName.trim() !== "") {
+        const filtered = allData.filter((h) =>
+          String(h.name).toLowerCase().includes(filterName.toLowerCase()),
         );
         setListHotels(filtered);
-      }else if(selectedFilter === "route" && filterRoute.trim() !== ""){
-        const filtered = allData.filter(
-          (h) => String(h.route).toLowerCase().includes(filterRoute.toLowerCase()),
+      } else if (selectedFilter === "route" && filterRoute.trim() !== "") {
+        const filtered = allData.filter((h) =>
+          String(h.route).toLowerCase().includes(filterRoute.toLowerCase()),
         );
         setListHotels(filtered);
-      }else {
+      } else if (selectedFilter === "tags" && filterTag.length > 0) {
+        const filtered = allData.filter((hotel) => {
+          const hotelTags = hotel.features || [];
+          //el every me va asegurar que traiga solo los que tengan todos los tags elegidos
+          return filterTag.every((tag) => hotelTags.includes(tag));
+        });
+        setListHotels(filtered);
+      } else {
         // Si no hay filtro, mostramos todos
         const sortList = shuffleArray(allData);
         setListHotels(sortList);
       }
+      setSelectedFilter("name")
     } catch (error) {
     } finally {
       setLoading(false);
@@ -64,14 +74,24 @@ const Home = () => {
   };
 
   //Creacion de las constantes para paginacion
-  const itemsPerPage = 5;//puede variar a gusto
-  const finalIndex = currentPage*itemsPerPage;
+  const itemsPerPage = 5; //puede variar a gusto
+  const finalIndex = currentPage * itemsPerPage;
   const firstIndex = finalIndex - itemsPerPage;
-    //Lista rebanada 
-  let paginatedHotels = useMemo(()=>
-    {return listHotels.slice(firstIndex,finalIndex)}, [listHotels,firstIndex,finalIndex]);
+  //Lista rebanada
+  let paginatedHotels = useMemo(() => {
+    return listHotels.slice(firstIndex, finalIndex);
+  }, [listHotels, firstIndex, finalIndex]);
 
-
+  //Creacion de lo necesario para el filtro por caracteristica o "tags"
+  const toggleTag = (tagKey) => {
+    setFilterTag((prevTags) => {
+      if (prevTags.includes(tagKey)) {
+        return prevTags.filter((tag) => tag !== tagKey);
+      } else {
+        return [...prevTags, tagKey];
+      }
+    });
+  };
   useEffect(() => {
     fetchHotels();
   }, []);
@@ -82,11 +102,11 @@ const Home = () => {
         <form>
           <label>Buscar por:</label>
           <div className="areas-search">
-            <select 
-            onChange={(e) => setSelectedFilter(e.target.value)}>
+            <select onChange={(e) => setSelectedFilter(e.target.value)}>
               <option value="name">Nombre</option>
               <option value="id">ID</option>
               <option value="route">Ruta</option>
+              <option value="tags">Servicios</option>
             </select>
             {selectedFilter === "id" && (
               <input
@@ -114,8 +134,33 @@ const Home = () => {
                 onChange={(e) => setfilterRoute(e.target.value)}
               />
             )}
-
+           
           </div>
+           {selectedFilter === "tags" && (
+              <div className="tags-filter-container">
+                <p className="tags-tittle">Seleciona los servicios</p>
+                <div className="tags-grid">
+                  {getAllIcons().map((item) => {
+                    const Iconcomponent = getIconByKey(item.iconKey);
+                    const isSelected = filterTag.includes(item.iconKey);
+
+                    return (
+                      <label className={`tag-item ${isSelected ? "active" : "" }`} key={item.iconKey}>
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={()=> toggleTag(item.iconKey)}
+                        />
+                        <span className="tag-content" >
+                          {Iconcomponent && <Iconcomponent/>}
+                          {item.iconKey}
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           <button onClick={handleSearch}>Buscar</button>
         </form>
       </div>
@@ -129,10 +174,11 @@ const Home = () => {
           <Hotels dataList={paginatedHotels} />
         )}
         <Pagination
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        itemsPerPage={itemsPerPage}
-        totalItems={listHotels.length} />
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          itemsPerPage={itemsPerPage}
+          totalItems={listHotels.length}
+        />
       </div>
       <div className="top-products-home">
         <h2>El top de nuestros hoteles</h2>

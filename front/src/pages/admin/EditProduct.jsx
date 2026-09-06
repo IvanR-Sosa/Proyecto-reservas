@@ -1,12 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./addProduct.css";
 import { uploadImgs } from "../../service/ApiHotel";
+import { getAllIcons, getIconByKey } from "../../utils/IconList";
 
 const EditProduct = ({ hotel, onSave }) => {
   const [formData, setFormData] = useState({ ...hotel });
   const [newMainImg, setNewMainImg] = useState(null);
   const [newOthersImg, setNewOthersImg] = useState(null);
+  const [selectedIcons, setSelectedIcons] = useState(() => {
+    if (hotel && hotel.features) {
+      return hotel.features.map(f => (typeof f === 'object' ? f.iconKey : f));
+    }
+    return [];
+  });
 
+   useEffect(() => {
+    if (hotel) {
+      setFormData({ ...hotel });
+      if (hotel.features) {
+        setSelectedIcons(hotel.features.map(f => (typeof f === 'object' ? f.iconKey : f)));
+      } else {
+        setSelectedIcons([]);
+      }
+    }
+  }, [hotel]);
+
+  console.log("Datos de features actuales: ", selectedIcons);
+
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -25,6 +46,16 @@ const EditProduct = ({ hotel, onSave }) => {
       const filesArray = files && files.length > 0 ? Array.from(files) : null;
       setNewOthersImg(filesArray);
     }
+  };
+
+  //Funcion que ayudara a manejar la seleccion de los iconos para editar
+ const toggleIcon = (iconKey) => {
+    setSelectedIcons((prev) => { 
+      if (prev.includes(iconKey)) {
+        return prev.filter((key) => key !== iconKey);
+      }
+      return [...prev, iconKey];
+    });
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,7 +85,8 @@ const EditProduct = ({ hotel, onSave }) => {
         }
       }
     }
-      const dataToSend = {
+    
+    const dataToSend = {
     id: formData.id,
     name: formData.name,
     price: formData.price,
@@ -64,6 +96,7 @@ const EditProduct = ({ hotel, onSave }) => {
     // Aquí forzamos el valor: si no subió nada, es null.
     mainImg: mainImgName, 
     othersImg: othersImgName,
+    features:selectedIcons,
   };
     await onSave(dataToSend);
   };
@@ -138,6 +171,34 @@ const EditProduct = ({ hotel, onSave }) => {
             multiple
           />
         </label>
+        {/*MAnejamos desde aqui el tema de las caracteristicas*/}
+        <h3>Selecciona los servicios</h3>
+        {/*MApeamos todos los iconos disponibles */}
+        <div className="features">
+          {getAllIcons().map((item)=>{
+          const IconComponent = getIconByKey(item.iconKey);
+          //Verificamos que este en nuestro estado
+          const isSelected = selectedIcons.includes(item.iconKey);
+          //Acontinuacion la parte de los select
+          return(
+            <div key={item.iconKey}>
+              <input 
+              type="checkbox"
+              id={item.iconKey}
+              checked={isSelected}
+              onChange={()=>toggleIcon(item.iconKey)}
+              />
+              <label htmlFor={item.iconKey}>
+                {IconComponent && <IconComponent/>}
+                {item.iconKey}
+                
+              </label>
+            </div>
+          )
+
+        })}
+        </div>
+        
         <button type="submit" className="btn-add">
           Editar
         </button>
