@@ -18,6 +18,7 @@ header{
 }
 .left-header span{
     font-size: 14px;
+    margin-left: 10px;
 }
 .right-header{
     padding-right: 10px;
@@ -39,6 +40,35 @@ header{
     background-color: #FFFFFF;
     font-size: 15px;
 }
+}
+
+.session{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.session .avatar {
+    width: 40px; 
+    height: 40px;
+    border-radius: 50%; /* Esto lo hace redondo */
+    background-color: #e8d983;
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; 
+    margin-bottom: 2px;
+    cursor: pointer; 
+    border: 1.5px solid #222; 
+    transition: all 0.5s;
+}
+@media(hover:hover){
+   .session .logout:hover{
+    font-size: 12px;
+   }
+}
+.session .logout{
+    font-size: 11px;
+    padding: 2px;
 }
 /*VAMOS A AJUSTAR LO NECESARIO PARA QUE EL HEADER FUNCIONE EN PANTALLAS DE 600PX O MENOS*/
 @media (max-width:600px) {

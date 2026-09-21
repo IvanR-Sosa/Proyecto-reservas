@@ -6,12 +6,12 @@
     width: 100%;
 }
 thead{
-    background-color: #8a5fa8;
-    color: #FFF;
+    color: #333;
     font-size: 16px;
     
 }
 th{
+    background-color: #a98fbc;
     padding: 5px 0;
 }
 tbody{
@@ -56,4 +56,13 @@ table tr .btn-edit:hover{
     background-color: #bd2130;
     color: #fff;
     font-size: 13px;
+}
+table tr .btn-rol{
+    background-color: rgb(106, 220, 146);
+}
+table tr .btn-rol:hover{
+    background-color: rgb(68, 239, 68);
+}
+table tr button{
+    margin-left: 3px;
 }

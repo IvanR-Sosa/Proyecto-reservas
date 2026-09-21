@@ -1,8 +1,8 @@
 import React from "react";
 import "./ListProduct.css";
 
-const ListProducts = ({ listData, onDelete, onEdit }) => {
-  const copyList = [...listData];
+const ListProducts = ({ listData = [], onDelete, onEdit }) => {
+  const copyList = Array.isArray(listData) ? [...listData] : [];
   copyList.sort((a, b) => a.id - b.id);
 
   const changeDelete = async (id) => {

@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;     
-  height: 100vh;           /* Asegura que el div ocupe el alto de la pantalla */
+  min-height: 100vh;           /* Asegura que el div ocupe el alto de la pantalla */
   width: 100%; 
   background-image: url(../../assets/rutah.PNG);
   background-size: 190px;
@@ -10,14 +10,14 @@
   background-repeat: repeat;
    background-color: rgba(0, 0, 0, 0.4); 
   background-blend-mode: overlay; 
+  padding: 20px 0;
 }
-.login form{
+.login .form{
     display: flex;
     flex-direction: column;
     gap: 10px;
     width: 50%;
     max-width: 400px;
-    background-color:  #F4F4F4;
     padding: 20px;
     font-size: 16px;
     color: #222;
@@ -26,20 +26,21 @@
     background-color: rgba(244, 244, 244, 0.82);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.18);
+    box-sizing: border-box;
 }
 .login h2{
     text-align: center;
     margin-bottom: 10px;
     color: #6A0DAD;
 }
-.login form label{
+.login .form label{
     display: flex;
     flex-direction: column;
     gap: 10px;
     font-weight: 600;
     text-align: left;
 }
-.login form input{
+.login .form input{
     border-radius: 5px;
     border: 1px solid #ccc;
     font-size: 14px;
@@ -48,21 +49,22 @@
     background-color: rgba(255, 255, 255, 0.5);
     transition: .3s ease;
     box-sizing: border-box;
+    width: 100%;
 }
-.login form input:focus{
+.login .form input:focus{
     box-shadow: 0 0 8px #04ace4;
     border-color: #04ace4;
     outline: none;
     background-color: rgba(255, 255, 255, 0.9);
 }
-.login form button,
-.login form a{
-    width: 50%;
+.login .form button,
+.login .form a{
+    width: 100%;
     margin: auto;
     cursor: pointer;
     background-color: #6A0DAD;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 14px;
     text-decoration: none;
     color: #FFFFFF;
     padding: 5px;
@@ -72,49 +74,65 @@
     transition: all .5s;
     display: block;
 }
-.login form a{
+.login .form a{
     text-align: center;
     background-color: transparent;
     color: #6A0DAD;
+    border: none;
 }
 @media(hover:hover) {
-  .login form button:hover {
+  .login .form button:hover {
     background-color: #FFFFFF;
     color: #6A0DAD;
     box-shadow: 0 0 10px #6A0DAD;
   }
 
-  .login form a:hover {
+  .login .form a:hover {
     background-color: rgba(106, 13, 173, 0.1);
     color: #4a097a;
   }
 }
+.login .form .btn-delete button{
+    background-color: rgb(148, 40, 40);
+}
+@media(hover:hover){
+    .login .form .btn-delete button:hover{
+    background-color: rgb(222, 78, 78);
+    color: #ccc;
+}
+}
 
-@media(max-width:600px){
-    .login form{
-        max-width: 550px;
-        width: 80%;
-        height: auto;
-    }
-    .login h2{
-    text-align: center;
-    font-size: 2.5rem;
+@media (max-width: 600px) {
+  .login {
+    min-height: 100vh;
+    padding-top: 20px; 
+  }
 
-}
-.login form button,
-.login form a{
-    font-size: 1.5rem;
-    padding: 12px;
-    margin: 10px auto;
-}
-.login label{
-    font-size: 1.4rem;
-    margin-bottom: 10px;
-    padding: 5px;
-    font-weight: bold;
-}
-.login form input{
-    font-size: 1.3rem;
+  .login .form {
+    width: 90%; 
+    max-width: 350px; 
+    margin: 0 auto; 
+    padding: 20px 15px; 
+  }
+
+  .login h2 {
+    font-size: 20px; 
+    margin-bottom: 15px;
+  }
+
+  .login .form label {
+    font-size: 14px; 
+  }
+
+  .login .form input {
+    font-size: 16px;
     padding: 10px;
-}
+  }
+
+  .login .form button,
+  .login .form a {
+    font-size: 16px; 
+    padding: 12px;
+    width: 100%; 
+  }
 }

@@ -6,10 +6,11 @@ import "./AdminHome.css";
 import {
   addHotel,
   deleteHotel,
-  findById,
   getAll,
   updateHotel,
 } from "../../service/ApiHotel";
+import { changeRolUser, deleteUser, getAllUsers } from "../../service/ApiUser";
+import ListUsers from "./ListUsers";
 
 const AdminHome = () => {
   const [addBtn, setAddBtn] = useState(false);
@@ -17,12 +18,30 @@ const AdminHome = () => {
   const [listHotels, setListHotels] = useState([]);
   const [editState, setEditState] = useState(null);
   const [loading, setLoading] = useState(false);
+  //listar usuarios
+  const [listUsers, setListUsers] = useState([]);
+  const [listUsersBtn, setListUsersBtn] = useState(false);
 
   const fetchHotels = async () => {
     setLoading(true);
     try {
-      const dataList = await getAll();
-      setListHotels(dataList);
+      const [hotelsResult, userResult] = await Promise.allSettled([
+        getAll(),
+        getAllUsers()
+      ])
+      if(hotelsResult.status === "fulfilled"){
+        setListHotels(hotelsResult.value);
+      }else{
+        console.error('Error en la carga de Hoteles ::> ',hotelsResult.reason);
+        setListHotels([]);
+      }
+      if(userResult.status === 'fulfilled'){
+        setListUsers(userResult.value);
+      }else{
+        console.error('Error al cargar los usuarios ::> ',userResult.reason)
+        setListUsers([]);
+      }
+      
     } catch (error) {
       console.error("Error al cargar los hoteles ::>  ", error);
     } finally {
@@ -65,7 +84,7 @@ const AdminHome = () => {
         setEditState(hotelEdit);
         setAddBtn(false);
         setListBtn(false);
-      } else if(editState === null){
+      } else if (editState === null) {
         console.error("hotel no encontrado");
       }
     } catch (error) {
@@ -74,17 +93,17 @@ const AdminHome = () => {
   };
   const handleSaveEdit = async (hotelToEdit) => {
     try {
-      const originalHotel = listHotels.find(h => h.id === hotelToEdit.id);
-      if(!originalHotel){
-        alert('Error en  la edicion: hotel no encontrado')
+      const originalHotel = listHotels.find((h) => h.id === hotelToEdit.id);
+      if (!originalHotel) {
+        alert("Error en  la edicion: hotel no encontrado");
         return;
       }
       const finalHotel = {
         ...hotelToEdit,
         mainImg: hotelToEdit.mainImg || originalHotel.mainImg,
-        othersImg: hotelToEdit.othersImg || originalHotel.othersImg
-      }
-     
+        othersImg: hotelToEdit.othersImg || originalHotel.othersImg,
+      };
+
       await updateHotel(finalHotel);
       await fetchHotels();
       setAddBtn(false);
@@ -93,18 +112,49 @@ const AdminHome = () => {
     } catch (error) {}
   };
 
+  //Funciones para manejar cambios en los usuarios
+  const handleDeleteUser = async (id) => {
+    if(window.confirm('¿Esta seguro de eliminar este usario?')){
+      try {
+        await deleteUser(id);
+        await fetchHotels()
+      } catch (error) {
+        console.error('Error al eliminar este usuario -->' , error);
+        alert('Error al elimina usuario')
+      }
+    }
+  }
+  const handleChangeRolUser = async (id) => {
+    if(window.confirm('¿Esta Seguro de cambiar de Rol a este Usuario?')){
+      try {
+        await changeRolUser(id);
+        await fetchHotels();
+      } catch (error) {
+        console.error('Error al cambiar de ROl ::> ',error);
+        alert('No se pudo cambiar de rol correctamente')
+      }
+    }
+    
+  }
+
   const changePanel = async (stateBtn) => {
     if (stateBtn === "agregar") {
       setAddBtn(!addBtn);
-      if (listBtn) {
-        setListBtn(false);
-      }
+      setListBtn(false);
+      setListUsersBtn(false);
+      setEditState(null);
     }
     if (stateBtn === "listar") {
       setListBtn(!listBtn);
-      if (addBtn) {
-        setAddBtn(false);
-      }
+      setAddBtn(false);
+      setListUsersBtn(false);
+      setEditState(null);
+    }
+    if (stateBtn === "listarUsers") {
+      setListUsersBtn(!listUsersBtn);
+      setListBtn(false);
+      setAddBtn(false);
+      setEditState(null);
     }
   };
   return (
@@ -112,8 +162,12 @@ const AdminHome = () => {
       <h1>Panel administrativo</h1>
       <div className="menu-admin">
         <button onClick={() => changePanel("listar")}>Listar Productos</button>
-        <button onClick={() => changePanel("agregar")}>Agregar Productos</button>
-        <button>Listar usuarios</button>
+        <button onClick={() => changePanel("agregar")}>
+          Agregar Productos
+        </button>
+        <button onClick={() => changePanel("listarUsers")}>
+          Listar usuarios
+        </button>
       </div>
       <div className="container-admin">
         {loading && <p>Cargando panel....</p>}
@@ -124,12 +178,21 @@ const AdminHome = () => {
             onEdit={handleClickEdit}
           />
         )}
-        {/*hacmos esto para que el boton de eliminar pueda acceder a esta funcion en el AdminHome */}
+        {/*hacemos esto para que el boton de eliminar pueda acceder a esta funcion en el AdminHome */}
         {addBtn && <AddProduct onAdd={handleAdd} />}
-        {editState && (<EditProduct hotel={editState} onSave={handleSaveEdit} />)}
+        {editState && <EditProduct hotel={editState} onSave={handleSaveEdit} />}
+
+        {/*listar usuarios */}
+        {listUsersBtn &&(
+           <ListUsers 
+            users={listUsers} 
+            onDelete={ handleDeleteUser}
+            onChangeRol={handleChangeRolUser}
+            />
+        )}
       </div>
     </div>
   );
-};
+}
 
 export default AdminHome;
