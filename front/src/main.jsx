@@ -25,13 +25,18 @@ createRoot(document.getElementById("root")).render(
           <Route path="/hotel_card/:id" element={<HotelCard />}></Route>
           <Route path="/Login" element={<Login />}></Route>
           <Route path="/Register" element={<Register />}></Route>
-          <Route path="/admin" element={<AdminHome />}></Route>
+          
           
 
           {/*Rutas protegidas */}
           <Route path="/Profile" element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }></Route>
+          <Route path="/admin" element={
+            <ProtectedRoute>
+              <AdminHome />
             </ProtectedRoute>
           }></Route>
         </Routes>

@@ -1,37 +1,72 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../auth/AuthContext';
 import '../public/Login.css'
+import { deleteUser, updateUser } from '../../service/ApiUser';
+import { useNavigate } from 'react-router-dom';
 
 
 const Profile = () => {
 
     const [edit, setEdit] = useState(false);
-    const [userChange, setUserChange] = useState();
+    const [userChange, setUserChange] = useState({});
     const [newPassword,setNewPassword] = useState('');
 
+    const navigate =useNavigate();
+    const {user,loading,logout,setUser} = useContext(AuthContext);
+    
 
-    const {user,loading} = useContext(AuthContext);
+    useEffect(() => {
+      if(user){
+        setUserChange({
+            name:user.name,
+            lastName:user.lastName,
+            email:user.email
+        })
+      }
+    }, [user]);
+
     if(loading) return <div>Cargando Datos</div>;
     if(!user) return <div>Sin usuario logueado</div>;
 
-    const fetchUser = async () => {
+    //Manejador para los inputs
+    const handleInputChange = (e) => {
+        const {name,value} = e.target;
+        setUserChange(prev => ({
+            ...prev,
+            [name]:value
+        }))
+    }
+
+    const handleSave = async (e) => {
+        if(e) e.preventDefault();
         try {
-            //aqui debera hacerse un llamado que traiga los datos de usuario y los setee
+            const dataToSend = {...userChange,rol:user.rol};
+            if(newPassword.trim() !== ''){
+                dataToSend.password = newPassword;
+            }else{
+                dataToSend.password = user.password;
+            }
+            await updateUser(user.id,dataToSend);
+            setUser(dataToSend)
+            alert('Perfil Actualizado Correctamente');
+            setEdit(false);
+            setNewPassword('');
         } catch (error) {
-            console.error('No Se pudo traer la informacion de usuario')
+            console.error('Error al actualizar perfil:', error);
+            alert('No se pudo actualizar el perfil');
         }
     }
-    useEffect(() => {
-      fetchUser();
-    }, []);
-
-    const handleSave = async () => {
-        //aqui ira una const que sette los cambios en el usuario un dataToSend
-        const dataToSend = {...userChange};
-        if(newPassword) dataToSend.password = newPassword;
-    }
     const handleDelete = async () => {
-        
+        if(window.confirm('¿Seguro de eliminar su perfil de usuario?')){
+           try {
+                await deleteUser(user.id);
+                logout();
+                navigate('/login'); // Redirigir al login tras eliminar
+            } catch (error) {
+                console.error('Error al eliminar cuenta:', error);
+                alert('No se pudo eliminar la cuenta');
+            }
+        }
     }
     
 
@@ -40,34 +75,49 @@ const Profile = () => {
         <div className="form">
             <h2>Nombre Del Usuario</h2>
 
-        <label >
-            Nombre:
-            <input type="text" 
-            value={user.name}
-            disabled={!edit}
-            onChange={''}/>
-        </label>
-        <label >
-            Apellido:
-            <input type="text" 
-            value={user.lastName}
-            disabled={!edit}
-            onChange={''}/>
-        </label>
-        <label >
-            Correo Electronico:
-            <input type="email" 
-            disabled={!edit}
-            onChange={''} />
-        </label>
-        {/*Solo no podra ser vista */}
-        <label >
-            Nueva contraseña:
-            <input type="password" 
-            value={'password'}
-            placeholder='Deja vacio para no cambiar'
-            onChange={''} />
-        </label>
+      <label>
+    Nombre:
+    <input 
+        type="text" 
+        name="name"
+        value={userChange.name} 
+        disabled={!edit} 
+        onChange={handleInputChange}
+    />
+</label>
+
+<label>
+    Apellido:
+    <input 
+         type="text" 
+        name="lastName"
+        value={userChange.lastName } 
+        disabled={!edit} 
+        onChange={handleInputChange}
+    />
+</label>
+
+<label>
+    Correo Electrónico:
+    <input 
+        type="email" 
+        name="email"
+        value={userChange.email} 
+        disabled={!edit} 
+        onChange={handleInputChange}
+    />
+</label>
+
+<label>
+    Nueva contraseña:
+    <input 
+        type="password" 
+        value={newPassword}
+        placeholder="Deja vacio para no cambiar"
+        onChange={(e) => setNewPassword(e.target.value)}
+        disabled={!edit}
+    />
+</label>
         <label >Rol : {user.rol}</label>
 
         <div className='btn-edit'>
@@ -76,6 +126,7 @@ const Profile = () => {
             ):(
                 <button onClick={handleSave}>Guardar Cambios</button>
             )}
+
         </div>
         <div className="btn-delete">
             <button onClick={handleDelete}>Eliminar cuenta</button>

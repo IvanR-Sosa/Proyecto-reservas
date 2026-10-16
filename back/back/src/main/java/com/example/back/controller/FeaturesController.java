@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(name = "/api/Feature")
+@RequestMapping("/api/features")
 @CrossOrigin(origins = "http://localhost:5173")
 public class FeaturesController {
     @Autowired
     private IFeaturesService service;
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<?> getAllFeatures() {
         try {
             List<Features> list = service.getAllFeatures();

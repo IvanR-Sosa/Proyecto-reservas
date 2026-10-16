@@ -31,7 +31,7 @@ const Register = () => {
       setsuccessMsg("Registro exitoso ya puedes Iniciar sesion :)")
       setnewUser({name:'',lastName:'',email:'',password:''})
       // esto es provisional ya que si cambio por medio de la url se refresca el proyecto y trae la lista original
-      navigate("/admin");
+      navigate("/login");
     } catch (error) {
       seterrorMsg(error.message || "Ocurrio un error al registrar usuario");
     }

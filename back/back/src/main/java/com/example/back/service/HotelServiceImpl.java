@@ -1,10 +1,12 @@
 package com.example.back.service;
 
 import com.example.back.controller.HotelDTO;
+import com.example.back.entities.Category;
 import com.example.back.entities.Features;
 import com.example.back.entities.Hotel;
 import com.example.back.persistence.IFeaturesDAO;
 import com.example.back.persistence.IHotelDAO;
+import com.example.back.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,9 @@ public class HotelServiceImpl implements IHotelService {
     private IHotelDAO hotelDAO;
     @Autowired
     private IFeaturesDAO featuresDAO;
+    //Inyeccion de categoria
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Override
     public List<Hotel> findAll() {
@@ -91,11 +96,15 @@ public class HotelServiceImpl implements IHotelService {
             }
             //llamamos al metodo que me permite settear las features
             hotel.setFeatures(processFeatures(hotelDTO.getFeatures()));
+            //Asignamos la categoria en caso de actualizacion
+            hotel.setCategory(findCategoryEntity(hotelDTO.getCategoryId()));
             hotelDAO.save(hotel);
         }else{
         Hotel hotel = mapToHotel(hotelDTO);
         //llamamos al metodo que me permite settear las features
         hotel.setFeatures(processFeatures(hotelDTO.getFeatures()));
+        //Asignamos categoria para el caso de la creacion
+            hotel.setCategory(findCategoryEntity(hotelDTO.getCategoryId()));
         hotelDAO.save(hotel);
         }
     }
@@ -135,6 +144,15 @@ public class HotelServiceImpl implements IHotelService {
                     .map(Features::getIconKey)
                     .collect(Collectors.toList());
         }
+        //Extraccion segura de la categoria
+        Long categoryId = null;
+        Category categoryDto = null;
+
+        if (hotel.getCategory() != null) {
+            categoryId = hotel.getCategory().getId();
+            // Solo buscamos en la BD si realmente existe el ID
+            categoryDto = categoryRepository.findById(categoryId).orElse(null);
+        }
         return HotelDTO.builder()
                 .id(hotel.getId())
                 .name(hotel.getName())
@@ -145,6 +163,9 @@ public class HotelServiceImpl implements IHotelService {
                 .mainImg(mainImgUrl)
                 .othersImg(othersImgUrl)
                 .features(featuresNames)
+                //Agregamos los campos de la categoria
+                .categoryId(categoryId)
+                .category(categoryDto)
                 .build();
     }
     private Hotel mapToHotel (HotelDTO hotelDTO){
@@ -181,5 +202,15 @@ public class HotelServiceImpl implements IHotelService {
         }
         //con esto ya me asegure que el Hotel tenga una lista de Features como en la entidad
         return featuresReturn;
+    }
+
+    //metodo helper para buscar limpiamente la categoria
+    private Category findCategoryEntity (Long categoryId){
+        if (categoryId == null){
+            return null;
+        }
+        //llamada al metodo del CategoryRepository
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(()->new RuntimeException("Category No encontrado"));
     }
 }

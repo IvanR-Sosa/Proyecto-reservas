@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./AddProduct.css";
-import { uploadImgs } from "../../service/ApiHotel";
+import { getAllCategories, uploadImgs } from "../../service/ApiHotel";
 import { getAllIcons, getIconByKey } from "../../utils/IconList";
 
 const AddProduct = ({ onAdd }) => {
@@ -12,10 +12,26 @@ const AddProduct = ({ onAdd }) => {
     route: "",
     mainImg: null,
     othersImg: [],
+    categoryId:"",
   });
   //useState que manejara las caracteristicas
   const [selectedIcons, setSelectedIcons] = useState([]);
-
+  //----------------------CATEGORIAS-----------------------
+  //Estados para manejar la categorias
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getAllCategories();
+        setCategories(response);
+      } catch (error) {
+        console.error("Error al cargar las categorias");
+      }
+    }
+    fetchCategories();
+  }, [])
+  
+  //-----------------------------------------------------------
   const handleChange = (e) => {
     const { name, value } = e.target;
     setHotel((prevData) => ({
@@ -50,6 +66,11 @@ const AddProduct = ({ onAdd }) => {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
+      //Validacion para obilgar a elegir una categoria
+      if(!hotel.categoryId){
+        alert('Por favor seleccione una categoria para el hotel');
+        return
+      }
       // estas variables guardaran los NOMBRES(texto) de las imagens
       let mainImgName = hotel.mainImg;
       let othersImgNames = hotel.othersImg;
@@ -89,10 +110,10 @@ const AddProduct = ({ onAdd }) => {
         othersImg: othersImgNames,
         goodAverage: parseFloat(hotel.goodAverage),
         price: parseFloat(hotel.price),
+        categoryId:parseFloat(hotel.categoryId,10),
         features: selectedIcons,
       };
-      console.log("Datos finales para cargar --> ", hotelData);
-
+      
       await onAdd(hotelData);
       alert(`Hola ¡${hotelData.name} ! datos cargados exitosamente`);
       setHotel({
@@ -103,6 +124,7 @@ const AddProduct = ({ onAdd }) => {
         route: "",
         mainImg: null,
         othersImg: [],
+        categoryId:"",
       });
       setSelectedIcons([]);
     } catch (error) {
@@ -126,6 +148,19 @@ const AddProduct = ({ onAdd }) => {
             onChange={handleChange}
             placeholder="nombre hotel"
           />
+        </label>
+        {/*Seleccion de la categoria */}
+        <label >
+          Categoria
+          <select name="categoryId" 
+          value={hotel.categoryId}
+          onChange={handleChange}
+          required>
+            <option value="">Seleccione una categoria</option>
+            {categories.map((cat)=>(
+              <option key={cat.id} value={cat.id}>{cat.tittle}</option>
+            ))}
+          </select>
         </label>
         <label>
           Precio ${" "}

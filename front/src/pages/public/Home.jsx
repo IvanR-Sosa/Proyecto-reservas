@@ -1,9 +1,11 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import "./Home.css";
 import Hotels from "../hotel/Hotels";
-import { getAll, getTopHotels } from "../../service/ApiHotel";
+import { getAll, getAllCategories, getTopHotels } from "../../service/ApiHotel";
 import Pagination from "../../Components/Pagination";
 import { getAllIcons, getIconByKey } from "../../utils/IconList";
+import { AuthContext } from "../../auth/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
 
 const shuffleArray = (array) => {
   const shuffled = [...array];
@@ -17,16 +19,35 @@ const shuffleArray = (array) => {
 const Home = () => {
   const [listHotels, setListHotels] = useState([]);
   const [topHotels, setTopHotels] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState([]);// trayendo las categorias para el filtro
+  const [loadingHome, setLoadingHome] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("name");
   const [filterId, setfilterId] = useState("");
   const [filterName, setfilterName] = useState("");
   const [filterRoute, setfilterRoute] = useState("");
   const [filterTag, setFilterTag] = useState([]);
+  const [filterCategory, setFilterCategory] = useState("")
   const [currentPage, setCurrentPage] = useState(1);
+  //--------LLamada al contexto global para modificar y usarlo al llamar al admin si corresponde
+  const {user} = useContext(AuthContext);
+  const navigate = useNavigate();
+  //--------------------------------------------------------------------------------------------
 
+  //--------------------- useEffect para Filtro de categorias ----------------------
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const data = await getAllCategories();
+        setCategories(data);
+      } catch (error) {
+        console.error("Error al cargar las categorias--> ",error)
+      }
+    };
+    loadCategories();
+  }, [])
+  
   const fetchHotels = async () => {
-    setLoading(true);
+    setLoadingHome(true);
     try {
       const allData = await getAll();
       const dataTop = await getTopHotels();
@@ -55,15 +76,20 @@ const Home = () => {
           return filterTag.every((tag) => hotelTags.includes(tag));
         });
         setListHotels(filtered);
+      }else if(selectedFilter === "category" && filterCategory !== ""){
+        const filtered = allData.filter((h) =>{
+          return h.category && String(h.category.id) === String(filterCategory)
+        });
+        setListHotels(filtered);
       } else {
         // Si no hay filtro, mostramos todos
         const sortList = shuffleArray(allData);
         setListHotels(sortList);
       }
-      setSelectedFilter("name")
+     
     } catch (error) {
     } finally {
-      setLoading(false);
+      setLoadingHome(false);
     }
   };
 
@@ -98,6 +124,11 @@ const Home = () => {
 
   return (
     <div className="home">
+      {(user && user.rol ==='ADMIN') && (
+        <div className="admin-panel">
+          <Link className="btn-admin" onClick={() => navigate('/admin')}  >Panel adminstrativo</Link>
+        </div>
+      )}
       <div className="search-home">
         <form>
           <label>Buscar por:</label>
@@ -107,6 +138,7 @@ const Home = () => {
               <option value="id">ID</option>
               <option value="route">Ruta</option>
               <option value="tags">Servicios</option>
+              <option value="category">Categoria</option>{/*Filtro de categorias */}
             </select>
             {selectedFilter === "id" && (
               <input
@@ -161,6 +193,22 @@ const Home = () => {
                 </div>
               </div>
             )}
+            {/*MANEJO DE EL FILTRADO PARA LOS HOTELES SEGUN CATEGORIA */}
+            {selectedFilter === "category" && (
+              <div className="category-filter">
+                <select value={filterCategory} 
+                onChange={(e)=>setFilterCategory(e.target.value)}
+                className="select-category-filter" >
+                  <option value="">Seleccione una categoria</option>
+                  {categories.map((cat) =>(
+                    <option key={cat.id} value={cat.id} >
+                      {cat.tittle}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
           <button onClick={handleSearch}>Buscar</button>
         </form>
       </div>
@@ -168,7 +216,7 @@ const Home = () => {
       <div className="products-home">
         <h2>Hoteles disponibles</h2>
 
-        {loading ? (
+        {loadingHome ? (
           <p>Cargando hoteles ....</p>
         ) : (
           <Hotels dataList={paginatedHotels} />
@@ -182,7 +230,7 @@ const Home = () => {
       </div>
       <div className="top-products-home">
         <h2>El top de nuestros hoteles</h2>
-        {loading ? (
+        {loadingHome ? (
           <p>Cargando hoteles ....</p>
         ) : (
           <Hotels dataList={topHotels} />
@@ -191,5 +239,4 @@ const Home = () => {
     </div>
   );
 };
-
 export default Home;

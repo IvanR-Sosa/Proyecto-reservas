@@ -1,5 +1,6 @@
 package com.example.back.controller;
 
+import com.example.back.entities.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,4 +23,7 @@ public class HotelDTO {
     private String mainImg;
     private List<String> othersImg;
     private List<String> features;
+    //--------Categoria
+    private Long categoryId;
+    private Category category;
 }

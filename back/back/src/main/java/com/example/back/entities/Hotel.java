@@ -35,5 +35,9 @@ public class Hotel {
       inverseJoinColumns = @JoinColumn(name = "feature_id"))
     @Builder.Default
     private List<Features> features = new ArrayList<>();
+    //--------------Relacion para la entidad Category
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = true)
+    private Category category;
 
 }

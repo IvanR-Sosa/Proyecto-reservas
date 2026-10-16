@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "./addProduct.css";
-import { uploadImgs } from "../../service/ApiHotel";
+import { getAllCategories, uploadImgs } from "../../service/ApiHotel";
 import { getAllIcons, getIconByKey } from "../../utils/IconList";
 
 const EditProduct = ({ hotel, onSave }) => {
-  const [formData, setFormData] = useState({ ...hotel });
+  const [formData, setFormData] = useState({ 
+    ...hotel,
+    categoryId: hotel?.category?.id || hotel?.categoryId || "" 
+  });
+  //Estado para las categorias
+  const [categories, setCategories] = useState([]);
   const [newMainImg, setNewMainImg] = useState(null);
   const [newOthersImg, setNewOthersImg] = useState(null);
   const [selectedIcons, setSelectedIcons] = useState(() => {
@@ -14,9 +19,25 @@ const EditProduct = ({ hotel, onSave }) => {
     return [];
   });
 
+  //Cargamos el catalogo de las categorias
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getAllCategories();
+        setCategories(response);
+      } catch (error) {
+        console.error('Error al cargar las categorias::> ',error)
+      }
+    }
+    fetchCategories();
+  }, [])
+  
+
    useEffect(() => {
     if (hotel) {
-      setFormData({ ...hotel });
+      setFormData({ ...hotel,
+        categoryId: hotel.category?.id || hotel.categoryId || "" 
+       });
       if (hotel.features) {
         setSelectedIcons(hotel.features.map(f => (typeof f === 'object' ? f.iconKey : f)));
       } else {
@@ -24,9 +45,6 @@ const EditProduct = ({ hotel, onSave }) => {
       }
     }
   }, [hotel]);
-
-  console.log("Datos de features actuales: ", selectedIcons);
-
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -96,6 +114,7 @@ const EditProduct = ({ hotel, onSave }) => {
     // Aquí forzamos el valor: si no subió nada, es null.
     mainImg: mainImgName, 
     othersImg: othersImgName,
+    categoryId:parseInt(formData.categoryId,10),
     features:selectedIcons,
   };
     await onSave(dataToSend);
@@ -114,6 +133,19 @@ const EditProduct = ({ hotel, onSave }) => {
             onChange={handleChange}
             placeholder="nombre hotel"
           />
+        </label>
+        {/*Insertamos la seccion de categorias */}
+        <label >
+          Categoria
+          <select name="categoryId" 
+          value={formData.categoryId}
+          onChange={handleChange}
+          required>
+            <option value="">Seleccione categoria</option>
+            {categories.map((cat)=>(
+              <option key={cat.id} value={cat.id}>{cat.tittle}</option>
+            ))}
+          </select>
         </label>
         <label>
           Precio ${" "}

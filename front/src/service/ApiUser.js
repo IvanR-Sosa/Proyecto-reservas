@@ -56,3 +56,17 @@ export const createUser = async (user) => {
     throw error;
   }
 };
+
+export const updateUser = async (id,userData) => {
+  try {
+    const index = originalData.findIndex(i => i.id == id)
+    if(index !== -1){
+      originalData[index]=userData;
+    }else{
+      console.error('Usuario no encontrado')
+    }
+  } catch (error) {
+      console.error('Error al actualizar::> ',error)
+  }
+  
+}

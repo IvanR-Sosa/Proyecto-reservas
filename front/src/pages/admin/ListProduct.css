@@ -1,68 +1,72 @@
-.list-admin{
-    width: 100%;
-    background-color: transparent;
+.list-admin {
+  width: 100%;
+  background-color: transparent;
 }
-.list-admin table{
-    width: 100%;
+.list-admin table {
+  width: 100%;
 }
-thead{
-    color: #333;
-    font-size: 16px;
-    
+thead {
+  color: #333;
+  font-size: 16px;
 }
-th{
-    background-color: #a98fbc;
-    padding: 5px 0;
+th {
+  background-color: #a98fbc;
+  padding: 5px 0;
 }
-tbody{
-    text-align: center;
-    font-size: 14px;
-    font-weight: 700;
+tbody {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
 }
-tr:nth-child(even){
-    background-color: #FFF;
+tr:nth-child(even) {
+  background-color: #fff;
 }
-tr:nth-child(odd){
-    background-color: #f8f9fa;
+tr:nth-child(odd) {
+  background-color: #f8f9fa;
 }
-td{
-    padding: 5px;
+td {
+  padding: 5px;
 }
-table tr .btn-edit{
-     background-color: #FFD700;
-    border: solid 1px #000;
-    border-radius: 5px;
-    font-size: 12px;
-    font-weight: bold;
-    padding: 5px;
-    transition: .2s ease;
-    margin-left: 10px;
+table tr .btn-edit {
+  background-color: #ffd700;
+  border: solid 1px #000;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 5px;
+  transition: 0.2s ease;
+  margin-left: 10px;
 }
-table tr .btn-edit:hover{
-    background-color: #f2e17e;
-    border: solid 1px #000;
-    font-size: 13px;
-    
+table tr .btn-edit:hover {
+  background-color: #f2e17e;
+  border: solid 1px #000;
+  font-size: 13px;
 }
- table tr .btn-delete{
-    background-color: #DC3545;
-    border: solid 1px #000;
-    color: #fff;
-    font-size: 12px;
-    padding: 5px;
-    transition: .2s ease;
+table tr .btn-delete {
+  background-color: #dc3545;
+  border: solid 1px #000;
+  color: #fff;
+  font-size: 12px;
+  padding: 5px;
+  transition: 0.2s ease;
 }
- table tr .btn-delete:hover{
-    background-color: #bd2130;
-    color: #fff;
-    font-size: 13px;
+table tr .btn-delete:hover {
+  background-color: #bd2130;
+  color: #fff;
+  font-size: 13px;
 }
-table tr .btn-rol{
-    background-color: rgb(106, 220, 146);
+table tr .btn-rol {
+  background-color: rgb(106, 220, 146);
 }
-table tr .btn-rol:hover{
-    background-color: rgb(68, 239, 68);
+table tr .btn-rol:hover {
+  background-color: rgb(68, 239, 68);
 }
-table tr button{
-    margin-left: 3px;
+table tr button {
+  margin-left: 3px;
+}
+td img {
+  width: 150px;
+  height: 48px;
+  object-fit: cover; /* recorta sin deformar */
+  border-radius: 6px;
 }

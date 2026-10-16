@@ -34,13 +34,11 @@ const HotelCard = () => {
   }, [id]);
 
   const handleGallery = async () => {
-    setshowGallery(!showGallery)
-    setshowAllGallery(false)
-    
+    setshowGallery(!showGallery);
+    setshowAllGallery(false);
   };
   const changeAllGallery = async () => {
     setshowAllGallery(!showAllGallery);
-    
   };
 
   if (loading) {
@@ -66,7 +64,7 @@ const HotelCard = () => {
       <div className="btn" onClick={handleGallery}>
         <button>ir a galeria</button>
       </div>
-      
+
       {/* esto va a salir solo si pulsa  el boton de arriba */}
       {showGallery && (
         <div className="galery-card">
@@ -80,34 +78,48 @@ const HotelCard = () => {
           </div>
         </div>
       )}
-      {showGallery && 
+      {showGallery && (
         <div className="btn" onClick={changeAllGallery}>
           <button>Ver todas las fotos</button>
         </div>
-        
-      }
+      )}
       {/*hacer que solo aprexca cuando se habra la galeria del boton de arriba*/}
       {/* esto va a salir solo si pulsa  el boton de arriba */}
-      {showAllGallery && 
+      {showAllGallery && (
         <div className="galery-complete">
           {hotel.othersImg.map((h, index) => (
             <img key={index} src={h} alt="" />
           ))}
         </div>
-      }
+      )}
+      {hotel.category &&<div className="description">
+        <h2>Tipo de hospedaje</h2>
+        <div className="category">
+          <div className="left">
+            <h3>{hotel.category.tittle || "sin categoria aun"}</h3>
+            <p>{hotel.category.description || "sin descripcion"}</p>
+          </div>
+
+          <div className="right">
+            <img src={hotel.category.imgUrl || "sin imagen"} alt="imagen Categoria" />
+          </div>
+        </div>
+      </div>}
       <div className="description">
         <h2>Que Te podemos Ofrecer en tu Estadia </h2>
         <div className="features-grid">
-          {hotel && hotel.features.map((feature,index)=>{
-            const keyName = typeof feature === 'object' ? feature.iconKey:feature;
-            const Iconcomponent= getIconByKey(keyName);
-            return (
-              <div className="feature-item" key={index}>
-                {Iconcomponent && <Iconcomponent  size={24}/>}
-                <p>{keyName}</p>
-              </div>
-            ) 
-          })}
+          {hotel &&
+            hotel.features.map((feature, index) => {
+              const keyName =
+                typeof feature === "object" ? feature.iconKey : feature;
+              const Iconcomponent = getIconByKey(keyName);
+              return (
+                <div className="feature-item" key={index}>
+                  {Iconcomponent && <Iconcomponent size={24} />}
+                  <p>{keyName}</p>
+                </div>
+              );
+            })}
         </div>
       </div>
     </div>

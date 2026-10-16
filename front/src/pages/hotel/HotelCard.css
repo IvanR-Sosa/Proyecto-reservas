@@ -143,6 +143,30 @@ img{
     color: #6A0DAD;             
     flex-shrink: 0;             
 }
+.category h3{
+    font-size: 1.2rem;
+}
+.category{
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+}
+.category .left{
+    align-items: center;
+    justify-content: center;
+    max-width: 250px;
+}
+.category .right, .category .left{
+    max-height: 120px;
+    width: 50%;
+    box-sizing: border-box;
+}
+.category .right img{
+    height: 100%;
+    border-radius: 50%;
+    border: solid 2px #6A0DAD;
+}
+
 
 /*VAMOS A HACER LOS AJUSTES NECESARIOS PARA QUE FUNCIONE EN PANTALLAS DE 600PX O MENOS*/
 @media(max-width:600px){

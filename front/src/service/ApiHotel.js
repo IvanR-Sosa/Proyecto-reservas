@@ -2,6 +2,7 @@ import axios from "axios";
 
 
 const baseUrlHotel = "http://localhost:8081/api/Hotel";
+const baseUrlCategory = "http://localhost:8081/api/categories";
 
 export const getAll = async () => {
   try {
@@ -88,3 +89,47 @@ export const uploadImgs = async (file) => {
     return response.data;
     
 }
+
+//---------ENDPOINTS PARA HACER EL LLAMADO A LAS CATEGORIAS DE HOTEL
+
+export const getAllCategories = async () => {
+  try {
+    const response = await axios.get(`${baseUrlCategory}/all`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener los datos", error);
+    throw error;
+  }
+  
+}
+export const createCategory = async (category) => {
+  try {
+    const response = await axios.post(`${baseUrlCategory}/save`,category,{
+      headers:{'Content-Type': 'application/json'}
+    })
+  } catch (error) {
+    console.error('Error al cargar categoria');
+    alert('No se pudo cargar la categoria')
+    
+  }
+}
+export const deleteCategory = async (id) =>{
+  try {
+    const response = await axios.delete(`${baseUrlCategory}/delete/${id}`)
+  } catch (error) {
+    alert('No se pudo eliminar la categoria');
+    console.error('Error para eliminar Categoria ::> ',error);
+  }
+  
+}
+export const updateCategory = async (cat) => {
+   try {
+      const response = await axios.put(`${baseUrlCategory}/update/${cat.id}`,cat,{
+        headers:{'Content-Type': 'application/json'}
+      })
+      alert('Actualizacion exitosa!!!')
+   } catch (error) {
+    alert('No se pudo editar');
+    console.error('Error al conectar con el back ::> ',error)
+   }
+  }
