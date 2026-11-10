@@ -1,16 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../auth/AuthContext';
 import '../public/Login.css'
-import { deleteUser, updateUser } from '../../service/ApiUser';
+import { deleteUserApi, updateUserApi } from '../../service/ApiUser';
 import { useNavigate } from 'react-router-dom';
+import ChangePassword from './ChangePassword';
 
 
 const Profile = () => {
 
     const [edit, setEdit] = useState(false);
     const [userChange, setUserChange] = useState({});
-    const [newPassword,setNewPassword] = useState('');
-
+    const [changePassword, setChangePassword] =useState(false);
     const navigate =useNavigate();
     const {user,loading,logout,setUser} = useContext(AuthContext);
     
@@ -20,7 +20,6 @@ const Profile = () => {
         setUserChange({
             name:user.name,
             lastName:user.lastName,
-            email:user.email
         })
       }
     }, [user]);
@@ -40,17 +39,25 @@ const Profile = () => {
     const handleSave = async (e) => {
         if(e) e.preventDefault();
         try {
-            const dataToSend = {...userChange,rol:user.rol};
-            if(newPassword.trim() !== ''){
-                dataToSend.password = newPassword;
-            }else{
-                dataToSend.password = user.password;
+             const dataToSend = { 
+                id : user.id,
+                name: userChange.name,
+                lastName: userChange.lastName,
+                rol: user.rol // Mantenemos el rol original
+            };
+            const updateFromBack =await updateUserApi(user.id,dataToSend);
+
+            const updateUserSession ={
+                ...user,
+                ...updateFromBack,
+                rol : user.rol
             }
-            await updateUser(user.id,dataToSend);
-            setUser(dataToSend)
+            setUser(updateUserSession);
+            sessionStorage.setItem("session_user",JSON.stringify(updateUserSession));
+
             alert('Perfil Actualizado Correctamente');
             setEdit(false);
-            setNewPassword('');
+
         } catch (error) {
             console.error('Error al actualizar perfil:', error);
             alert('No se pudo actualizar el perfil');
@@ -59,7 +66,7 @@ const Profile = () => {
     const handleDelete = async () => {
         if(window.confirm('¿Seguro de eliminar su perfil de usuario?')){
            try {
-                await deleteUser(user.id);
+                await deleteUserApi(user.id);
                 logout();
                 navigate('/login'); // Redirigir al login tras eliminar
             } catch (error) {
@@ -71,6 +78,7 @@ const Profile = () => {
     
 
   return (
+    
     <div className='login'>
         <div className="form">
             <h2>Nombre Del Usuario</h2>
@@ -80,7 +88,7 @@ const Profile = () => {
     <input 
         type="text" 
         name="name"
-        value={userChange.name} 
+        value={userChange.name || ''}
         disabled={!edit} 
         onChange={handleInputChange}
     />
@@ -89,51 +97,31 @@ const Profile = () => {
 <label>
     Apellido:
     <input 
-         type="text" 
+        type="text" 
         name="lastName"
-        value={userChange.lastName } 
+        value={userChange.lastName || ''}
         disabled={!edit} 
         onChange={handleInputChange}
     />
 </label>
 
-<label>
-    Correo Electrónico:
-    <input 
-        type="email" 
-        name="email"
-        value={userChange.email} 
-        disabled={!edit} 
-        onChange={handleInputChange}
-    />
-</label>
-
-<label>
-    Nueva contraseña:
-    <input 
-        type="password" 
-        value={newPassword}
-        placeholder="Deja vacio para no cambiar"
-        onChange={(e) => setNewPassword(e.target.value)}
-        disabled={!edit}
-    />
-</label>
         <label >Rol : {user.rol}</label>
-
         <div className='btn-edit'>
             {!edit ? (
                 <button onClick={()=>setEdit(true)}>Editar perfil</button>
             ):(
                 <button onClick={handleSave}>Guardar Cambios</button>
             )}
-
+        <button onClick={() => setChangePassword(!changePassword)}>Cambiar contraseña</button>
         </div>
         <div className="btn-delete">
             <button onClick={handleDelete}>Eliminar cuenta</button>
-        </div>    
+        </div> 
         </div>
-        
+        {changePassword && <ChangePassword/>}
     </div>
+    
+    
   )
 }
 

@@ -16,7 +16,7 @@ import {
   updateCategory,
   updateHotel,
 } from "../../service/ApiHotel";
-import { changeRolUser, deleteUser, getAllUsers } from "../../service/ApiUser";
+import { changeRoleUserApi, deleteUserApi, getAllUsersApi } from "../../service/ApiUser";
 import ListUsers from "./ListUsers";
 
 const AdminHome = () => {
@@ -39,7 +39,7 @@ const AdminHome = () => {
     setLoading(true);
     try {
       const [hotelsResult, userResult, categoriesResult] =
-        await Promise.allSettled([getAll(), getAllUsers(), getAllCategories()]);
+        await Promise.allSettled([getAll(), getAllUsersApi(), getAllCategories()]);
       if (hotelsResult.status === "fulfilled") {
         setListHotels(hotelsResult.value);
       } else {
@@ -135,7 +135,7 @@ const AdminHome = () => {
   const handleDeleteUser = async (id) => {
     if (window.confirm("¿Esta seguro de eliminar este usario?")) {
       try {
-        await deleteUser(id);
+        await deleteUserApi(id);
         await fetchHotels();
       } catch (error) {
         console.error("Error al eliminar este usuario -->", error);
@@ -143,10 +143,11 @@ const AdminHome = () => {
       }
     }
   };
-  const handleChangeRolUser = async (id) => {
+  const handleChangeRolUser = async (id,currentRole) => {
     if (window.confirm("¿Esta Seguro de cambiar de Rol a este Usuario?")) {
       try {
-        await changeRolUser(id);
+        const updatedUser = await changeRoleUserApi(id,currentRole);
+        alert('Rol actualizado correctamnete');
         await fetchHotels();
       } catch (error) {
         console.error("Error al cambiar de ROl ::> ", error);

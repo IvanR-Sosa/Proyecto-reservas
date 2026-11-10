@@ -1,6 +1,81 @@
+import api from "./api"
 import { dataUsers as originalData} from "../fakeFile/dataUsers";
 
 
+
+const PATH_USER="/users"
+
+//---------ADAPTACIONES AL BACK ------------------------------
+export const loginUserApi = async (email,password) => {
+  const response = await api.post('/auth/login',{email,password});
+  return response.data;
+  
+}
+
+export const registeUserApi = async (user) => {
+  const response = await api.post('/auth/register',{
+    name:user.name,
+    lastName: user.lastName,
+    email: user.email,
+    password: user.password
+  })
+  return response.data;
+  
+}
+
+export const getAllUsersApi = async () => {
+  try {
+    const response = await api.get(PATH_USER);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener los datos de los usuarios ::> ",error);
+    throw error;
+  }
+}
+export const deleteUserApi = async (id) =>{
+  try{
+    const response= await api.delete(`${PATH_USER}/${id}`);
+    return response.data;
+
+  }catch (error){
+    console.error("Error al borrar usuario ::> ",error);
+    throw error;
+  }
+}
+export const updateUserApi = async(id,user) =>{
+  try {
+   
+    const response = await api.put(`${PATH_USER}/${id}`,user);
+    return response.data;
+    
+  } catch (error) {
+    console.error("Error al modificar perfil de usuario ::> ",error);
+    throw error;
+  }
+}
+export const changeRoleUserApi = async (id,currentRole) => {
+  try {
+    const nextRole = currentRole === "ADMIN" ? "USER" : "ADMIN";
+
+    const response = await api.patch(`${PATH_USER}/${id}/role`,nextRole);
+    return response.data;
+  } catch (error) {
+    console.error("Error al cambiar de rol ::> ",error);
+    throw error;
+  }
+  
+}
+export const changePasswordApi = async (id,password) => {
+  try {
+    const response = await api.patch(`${PATH_USER}/${id}/password`,{password});
+    return response.data;
+  } catch (error) {
+    console.error("Error al actualizar la contraseña ::> ",error);
+    throw error;
+  }
+  
+}
+//------------------------------------------------------------
 //Esto me servira para poder ver los cambio mientras navego entre paginas usarlos desde el localStorage
 //para que se refresque la pagina pero los datos sigan existiendo mientras tanto 
 const getStoredUsers = ()=>{
@@ -12,61 +87,4 @@ const getStoredUsers = ()=>{
     return JSON.parse(stored)
 }
 
-export const getAllUsers = async () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([...originalData]);
-    }, 500);
-  });
-};
-export const deleteUser = async (id) => {
-  const newUsers = originalData.filter((u) => u.id !== id);
-  originalData.length = 0;
-  originalData.push(...newUsers);
-  localStorage.setItem("dataUsers",JSON.stringify(originalData));
-};
 
-export const changeRolUser = async (id) => {
-  const usuario = originalData.find((u) => u.id === id);
-  if (usuario) {
-    usuario.rol = usuario.rol === "ADMIN" ? "USER" : "ADMIN";
-  }
-  localStorage.setItem("dataUsers",JSON.stringify(originalData));
-};
-
-export const createUser = async (user) => {
-  try {
-    const verifyEmail = originalData.find((u) => u.email === user.email);
-    if (verifyEmail) {
-      throw new Error("Este correo electrónico ya está en uso."); 
-    }
-    const newId = originalData.length>0 ? Math.max(...originalData.map(u=>u.id))+1:1;
- 
-    const newUser = {
-        ...user,
-        id:newId,
-        rol:'USER'
-    }
-    originalData.push(newUser);
-    localStorage.setItem("dataUsers",JSON.stringify(originalData));
-    console.log("Usuario creado con éxito:", newUser);
-    console.log("Lista actualizada:", originalData);
-  } catch (error) {
-    console.error("No se pudo realizar el registro ::> ", error);
-    throw error;
-  }
-};
-
-export const updateUser = async (id,userData) => {
-  try {
-    const index = originalData.findIndex(i => i.id == id)
-    if(index !== -1){
-      originalData[index]=userData;
-    }else{
-      console.error('Usuario no encontrado')
-    }
-  } catch (error) {
-      console.error('Error al actualizar::> ',error)
-  }
-  
-}

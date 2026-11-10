@@ -1,135 +1,145 @@
-import axios from "axios";
+import api from "./api"; // Cambiamos 'axios' por tu instancia centralizada con interceptor JWT
 
+// Rutas relativas basadas en tu backend (Axios les antepone 'http://localhost:8081/api')
+const PATH_HOTEL = "/hotels"; 
+const PATH_CATEGORY = "/categories";
 
-const baseUrlHotel = "http://localhost:8081/api/Hotel";
-const baseUrlCategory = "http://localhost:8081/api/categories";
+// =========================================================================
+// ENDPOINTS PARA HOTELES (MÉTODOS GET LIBERADOS / POST, PUT, DELETE CON JWT)
+// =========================================================================
 
 export const getAll = async () => {
   try {
-    const response = await axios.get(`${baseUrlHotel}`);
+    
+    const response = await api.get(PATH_HOTEL);
     return response.data;
   } catch (error) {
-    console.error("Error al obtener los datos", error);
+    console.error("Error al obtener los hoteles:", error);
     throw error;
   }
 };
+
 export const getTopHotels = async (attribute = "goodAverage", limit = 5) => {
  try {
-    const response = await axios.get(`${baseUrlHotel}/top`);
+    const response = await api.get(`${PATH_HOTEL}/top`);
     return response.data;
  } catch (error) {
-    console.error("Error al obtener los datos", error);
+    console.error("Error al obtener los hoteles top:", error);
     throw error;
  }
 };
+
 export const findById = async (id) => {
   try {
-    const response = await axios.get(`${baseUrlHotel}/${id}`);
-    return response.data
+    const response = await api.get(`${PATH_HOTEL}/${id}`);
+    return response.data;
   } catch (error) {
-    console.error("Error al obtener los datos", error);
+    console.error(`Error al obtener el hotel con id ${id}:`, error);
     throw error;
   }
 };
 
 export const addHotel = async (hotel) => {
   try {
-    const allHotels =await getAll();
+    const allHotels = await getAll();
     const existHotelName = allHotels.some(h => h.name === hotel.name);
 
-    if(existHotelName){
-        alert('Nombre de hotel ya existe')
-        return
+    if (existHotelName) {
+        alert('El nombre del hotel ya existe');
+        return;
     }
-    const response = await axios.post(`${baseUrlHotel}/save`,hotel,{
-        headers:{'Content-Type': 'application/json'}
-    })
-     console.log("Hotel agregado exitosamente", response.data);
-
+    // Al usar 'api', este POST envía automáticamente el token JWT en el Header
+    const response = await api.post(`${PATH_HOTEL}/save`, hotel);
+    console.log("Hotel agregado exitosamente", response.data);
+    return response.data;
   } catch (error) {
-    console.error("Error al enviar los datos", error);
+    console.error("Error al guardar el hotel:", error);
     throw error;
   }
 };
 
-
-
 export const deleteHotel = async (id) => {
-try {
-  const response = await axios.delete(`${baseUrlHotel}/delete/${id}`);
-} catch (error) {
-  console.error("No se pudo eliminar el Hotel-->".error)
-  alert("Error al eliminar el hotel")
-}
+  try {
+    // Al usar 'api', este DELETE envía automáticamente el token JWT en el Header
+    await api.delete(`${PATH_HOTEL}/delete/${id}`);
+    console.log("Hotel eliminado con éxito");
+  } catch (error) {
+    console.error("No se pudo eliminar el Hotel -->", error);
+    alert("Error al eliminar el hotel");
+    throw error;
+  }
 };
-
-
 
 export const updateHotel = async (hotel) => {
   try {
-    const response = await axios.put(`${baseUrlHotel}/update/${hotel.id}`,hotel,{
-         headers:{'Content-Type': 'application/json'}
-    })
+    // Al usar 'api', este PUT envía automáticamente el token JWT en el Header
+    await api.put(`${PATH_HOTEL}/update/${hotel.id}`, hotel);
+    console.log("Hotel actualizado con éxito");
   } catch (error) {
-     console.error("Error al enviar los datos", error);
+    console.error("Error al actualizar el hotel:", error);
     throw error;
   }
 };
 
-//funcion que permitira que al cargar imagenes se suban correctamente al sistema
-
+// Función para subir imágenes usando FormData y manteniendo el interceptor JWT
 export const uploadImgs = async (file) => {
-    let formData = new FormData();
-    formData.append("file",file);// este nombre debe coincidir con el back
+    try {
+      let formData = new FormData();
+      formData.append("file", file); // Debe coincidir con el @RequestParam("file") de Java
 
-    const response = await axios.post(`${baseUrlHotel}/upload`,formData,{
-        headers:{'Content-Type':"multipart/form-data"}
-    })
-    // el servidor por el momento no devolvera el nombre del archivo (ej img7.png)
-    return response.data;
-    
-}
+      const response = await api.post(`${PATH_HOTEL}/upload`, formData, {
+          headers: { 'Content-Type': "multipart/form-data" } // Axios calculará los boundaries automáticamente
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error al subir la imagen:", error);
+      throw error;
+    }
+};
 
-//---------ENDPOINTS PARA HACER EL LLAMADO A LAS CATEGORIAS DE HOTEL
+// =========================================================================
+// ENDPOINTS PARA CATEGORÍAS DE HOTEL
+// =========================================================================
 
 export const getAllCategories = async () => {
   try {
-    const response = await axios.get(`${baseUrlCategory}/all`);
+    const response = await api.get(`${PATH_CATEGORY}/all`);
     return response.data;
   } catch (error) {
-    console.error("Error al obtener los datos", error);
+    console.error("Error al obtener las categorías:", error);
     throw error;
   }
-  
-}
+};
+
 export const createCategory = async (category) => {
   try {
-    const response = await axios.post(`${baseUrlCategory}/save`,category,{
-      headers:{'Content-Type': 'application/json'}
-    })
+    await api.post(`${PATH_CATEGORY}/save`, category);
+    console.log("Categoría guardada con éxito");
   } catch (error) {
-    console.error('Error al cargar categoria');
-    alert('No se pudo cargar la categoria')
-    
+    console.error('Error al cargar categoria:', error);
+    alert('No se pudo cargar la categoria');
+    throw error;
   }
-}
-export const deleteCategory = async (id) =>{
+};
+
+export const deleteCategory = async (id) => {
   try {
-    const response = await axios.delete(`${baseUrlCategory}/delete/${id}`)
+    await api.delete(`${PATH_CATEGORY}/delete/${id}`);
+    console.log("Categoría eliminada con éxito");
   } catch (error) {
-    alert('No se pudo eliminar la categoria');
-    console.error('Error para eliminar Categoria ::> ',error);
+    alert('No se pudo eliminar la categoría');
+    console.error('Error para eliminar Categoria ::> ', error);
+    throw error;
   }
-  
-}
+};
+
 export const updateCategory = async (cat) => {
    try {
-      const response = await axios.put(`${baseUrlCategory}/update/${cat.id}`,cat,{
-        headers:{'Content-Type': 'application/json'}
-      })
-      alert('Actualizacion exitosa!!!')
+      await api.put(`${PATH_CATEGORY}/update/${cat.id}`, cat);
+      alert('¡¡¡Actualización de categoría exitosa!!!');
    } catch (error) {
-    alert('No se pudo editar');
-    console.error('Error al conectar con el back ::> ',error)
+      alert('No se pudo editar la categoría');
+      console.error('Error al conectar con el back ::> ', error);
+      throw error;
    }
-  }
+};

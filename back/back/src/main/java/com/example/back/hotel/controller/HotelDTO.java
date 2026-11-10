@@ -1,0 +1,29 @@
+package com.example.back.hotel.controller;
+
+import com.example.back.hotel.entities.Category;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Builder
+
+public class HotelDTO {
+    private Long id;
+    private String name;
+    private String description;
+    private Double goodAverage;
+    private Double price;
+    private String route;
+    private String mainImg;
+    private List<String> othersImg;
+    private List<String> features;
+    //--------Categoria
+    private Long categoryId;
+    private Category category;
+}

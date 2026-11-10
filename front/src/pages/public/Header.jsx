@@ -14,12 +14,17 @@ const Header = () => {
         logout();//limpia el estado
         navigate('/login')
     }
-    let avatar = '';
-  if(user){
-    avatar = user.name[0]+user.lastName[0]
-    avatar=avatar.toUpperCase();
-  }
+ let avatar = '';
+    if(user && user.name && user.lastName){
+        const firstName = user.name.charAt(0) || ''
+        const lastName = user.lastName.charAt(0) || ''
 
+        avatar = firstName + lastName;
+        avatar = avatar.toUpperCase();
+    }else if (user && user.email) {
+    // Caso de respaldo por si en algún punto solo existe el email
+    avatar = user.email.charAt(0).toUpperCase() + 'U';
+  }
   return (     
         <>
         {user ? (

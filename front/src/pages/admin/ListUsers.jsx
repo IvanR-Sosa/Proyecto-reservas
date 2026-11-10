@@ -27,13 +27,13 @@ const ListUsers = ({ users = [] , onDelete, onChangeRol}) => {
                     <td>{u.name}</td>
                     <td>{u.lastName}</td>
                     <td>{u.email}</td>
-                    <td>{u.rol}</td>
+                    <td>{u.role}</td>
                     <td>
                         <button className="btn-delete"
                          onClick={() => onDelete && onDelete(u.id)}
                         >Eliminar</button>
                         <button className="btn-rol"
-                          onClick={()=> onChangeRol && onChangeRol(u.id)}
+                          onClick={()=> onChangeRol && onChangeRol(u.id,u.role)}
                         >Cambiar Rol</button>
                     </td>
                 </tr>

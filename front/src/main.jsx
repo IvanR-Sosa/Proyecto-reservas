@@ -12,6 +12,7 @@ import Register from "./pages/public/Register.jsx";
 import { AuthProvider } from "./auth/AuthContext.jsx";
 import Profile from "./pages/user/Profile.jsx"
 import { ProtectedRoute } from "./routes/ProtectedRoute.jsx";
+import ChangePassword from "./pages/user/ChangePassword.jsx";
 
 
 

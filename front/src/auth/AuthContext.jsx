@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
-import { getAllUsers } from "../service/ApiUser";
+import { loginUserApi, registeUserApi } from "../service/ApiUser";
 
 export const AuthContext = createContext();
 
@@ -14,29 +14,53 @@ export const AuthProvider = ({ children }) => {
     }
     setLoading(false);
   }, []);
-
-  //Funcion para manejar el login de usuarios
-  const loginUser = async (email, password) => {
+  //Funcion para manejar el Login desde el back conectado a spring boot
+  const loginUser = async (email,password) => {
     try {
-      // 1. Esperamos a que getAllUsers termine y devuelva el array
-      const users = await getAllUsers();
-
-      // 2. Ahora 'users' SÍ es el array
-      const foundUser = users.find(
-        (u) => u.email === email && u.password === password,
-      );
-
-      if (foundUser) {
-        setUser(foundUser);
-        sessionStorage.setItem("session_user", JSON.stringify(foundUser));
-        return { success: true };
+      const data = await loginUserApi(email,password);
+       
+      //Aqui viene lo importante que es extraer el token
+      const {token,name,lastName,id,role} = data;
+      if(token){
+        const loggedUser = {
+          email,
+          token,
+          name,
+          lastName,
+          id,
+          rol:role
+        };
+        setUser(loggedUser);
+        sessionStorage.setItem("session_user",JSON.stringify(loggedUser));
+        return {success:true};
       }
-      return { success: false, message: "Credenciales incorrectas" };
+      return {success:false,message:"Credenciales incorrectas"}
+
     } catch (error) {
-      console.error("Error en login:", error);
-      return { success: false, message: "Error de sistema" };
+      console.error("Error en Login ::> ",error);
+      const msg = error.response?.data?.message || "Error de sistema al conectar con el servidor";
+      return {success:false,message:msg};
     }
-  };
+  }
+  //Funcion para manejar el regitro conectado con el back 
+  const registerUser = async (userData) => {
+    try {
+      const data = await registeUserApi(userData);
+      const {token} = data;
+      if( token){
+       const loggedUser = {email:userData.email,token,name:userData.name,lastName:userData.lastName,id:userData.id};
+       sessionStorage.setItem("session_user",JSON.stringify(loggedUser));
+       return {success:true}; 
+      }
+      return {success:false,message:"No se pudo completar el registro"}
+    } catch (error) {
+      console.error("Error de Regitro ::> ",error);
+      const msg = error.response?.data?.message || "El correo elegido ya esta en uso";
+      return {success:false, message:msg};
+      
+    }
+    
+  }
   //Funcion para el logout
   const logout = () => {
     setUser(null);
@@ -44,7 +68,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, loginUser, logout,setUser }}>
+    <AuthContext.Provider value={{ user, loading, loginUser, registerUser, logout,setUser }}>
       {children}
     </AuthContext.Provider>
   );

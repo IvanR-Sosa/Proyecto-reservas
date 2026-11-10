@@ -8,9 +8,10 @@
   background-size: 190px;
   background-position: center;
   background-repeat: repeat;
-   background-color: rgba(0, 0, 0, 0.4); 
+  background-color: rgba(0, 0, 0, 0.4); 
   background-blend-mode: overlay; 
   padding: 20px 0;
+  gap: 10px;
 }
 .login .form{
     display: flex;
@@ -106,27 +107,30 @@
   .login {
     min-height: 100vh;
     padding-top: 20px; 
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
   .login .form {
     width: 90%; 
     max-width: 350px; 
     margin: 0 auto; 
-    padding: 20px 15px; 
+    padding: 10px 15px; 
   }
 
   .login h2 {
-    font-size: 20px; 
+    font-size: 18px; 
     margin-bottom: 15px;
   }
 
   .login .form label {
-    font-size: 14px; 
+    font-size: 12px; 
   }
 
   .login .form input {
-    font-size: 16px;
-    padding: 10px;
+    font-size: 13px;
+    padding: 8px;
   }
 
   .login .form button,
@@ -136,3 +140,4 @@
     width: 100%; 
   }
 }
+
